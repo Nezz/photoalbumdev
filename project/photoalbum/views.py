@@ -47,18 +47,18 @@ def register(request):
 	user = User.objects.create_user(username, email, password)
 	c = {}
 	c.update(csrf(request))
-	plaintext = get_template('email.txt')
-	htmly     = get_template('email.html')
-
-	d = Context({ 'username': username })
-
-	subject, from_email, to = 'hello', 'petyalovei@gmail.com', email
-	text_content = plaintext.render(d)
-	html_content = htmly.render(d)
-	msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-	msg.attach_alternative(html_content, "text/html")
-	msg.send()
-	return render_to_response("login.html", c)
+	# plaintext = get_template('email.txt')
+# 	htmly     = get_template('email.html')
+# 
+# 	d = Context({ 'username': username })
+# 
+# 	subject, from_email, to = 'hello', 'petyalovei@gmail.com', email
+# 	text_content = plaintext.render(d)
+# 	html_content = htmly.render(d)
+# 	msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+# 	msg.attach_alternative(html_content, "text/html")
+# 	msg.send()
+ 	return render_to_response("login.html", c)
         
 def register_view(request):
 	c = {}
