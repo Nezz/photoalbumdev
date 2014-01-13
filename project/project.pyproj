@@ -5,7 +5,7 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <Name>project</Name>
     <RootNamespace>project</RootNamespace>
-    <InterpreterId>{90e520cb-9610-4fcb-bba1-444de18d4a94}</InterpreterId>
+    <InterpreterId>{1040caab-89d0-410c-b14c-a62f148130a2}</InterpreterId>
     <InterpreterVersion>2.7</InterpreterVersion>
   </PropertyGroup>
   <PropertyGroup>
@@ -33,6 +33,7 @@
     <Compile Include="manage.py" />
     <Compile Include="project\*.py" />
     <Compile Include="photoalbum\*.py" />
+    <Compile Include="templates\*.html" />
   </ItemGroup>
   <ItemGroup>
     <WebPiReference Include="https://www.microsoft.com/web/webpi/3.0/toolsproductlist.xml%3fDjango">
@@ -51,6 +52,16 @@
     <Folder Include="project\" />
   </ItemGroup>
   <ItemGroup>
+    <Interpreter Include="env\">
+      <Id>{1040caab-89d0-410c-b14c-a62f148130a2}</Id>
+      <BaseInterpreter>{9a7a9026-48c1-4688-9d5d-e5699d47d074}</BaseInterpreter>
+      <Version>2.7</Version>
+      <Description>env (Python 64-bit 2.7)</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <LibraryPath>Lib\</LibraryPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+    </Interpreter>
     <Interpreter Include="\env\">
       <Id>{90e520cb-9610-4fcb-bba1-444de18d4a94}</Id>
       <BaseInterpreter>{2af0f10d-7135-4994-9156-5d01c9c11b7e}</BaseInterpreter>
