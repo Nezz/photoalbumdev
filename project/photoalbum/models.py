@@ -8,15 +8,18 @@ from django.contrib.auth.models import User
 
 class Album(models.Model):
     name = models.CharField(max_length=255)
-    description = models.TextField()
     owner = models.ForeignKey(User)
 
 class Slide(models.Model):
-    order_number = models.IntegerField(default=0)
+    template = models.IntegerField(default=0)
     album = models.ForeignKey('Album')
 
+    class Meta:
+        order_with_respect_to = 'album'
+
 class Photo(models.Model):
-    link = models.URLField(max_length=255)
+    link = models.URLField(max_length=255, blank=True)
+    description = models.TextField()
     slide = models.ForeignKey('Slide')
 
 class Order(models.Model):
