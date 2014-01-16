@@ -6,9 +6,10 @@
 	  	<link href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
 	  	<link href="{% static 'bootstrap/dist/css/bootstrap-theme.css' %}" rel="stylesheet">
 	</head>
-	<body>
-		<script src="https://code.jquery.com/jquery.js"></script>
-	  	<script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    <body>
+        <script src="https://code.jquery.com/jquery.js"></script>
+        <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+        <a href="/logout/">Logout</a>
         <div class="container">
             <h1>Albums</h1>
             <table style="text-align: center;" class="table table-hover">
@@ -27,5 +28,5 @@
                 {% endfor %}
             </table>
         </div>
-	</body>
+    </body>
 </html>
