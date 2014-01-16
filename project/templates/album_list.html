@@ -9,7 +9,6 @@
     <body>
         <script src="https://code.jquery.com/jquery.js"></script>
         <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
-        <a href="/logout/">Logout</a>
         <div class="container">
             <h1>Albums</h1>
             <table style="text-align: center;" class="table table-hover">
@@ -20,14 +19,23 @@
                 {% for a in albums %}
                 <tr>
                     <td>
-                        <a href="./albums/{{a.id}}/">{{a.name}}</a>
+                        <a href="/albums/{{a.id}}/">{{a.name}}</a>
                     </td>
                     <td>
                         {{a.id}}
                     </td>
+                    <td>
+                        <form action="/albums/{{a.id}}/delete" method="post">{% csrf_token %}
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </table>
+            <form action="/albums/" method="post">{% csrf_token %}
+                <button type="submit">New album</button>
+            </form>
+            <a href="/logout/">Logout</a>
         </div>
     </body>
 </html>
