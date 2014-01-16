@@ -8,7 +8,6 @@ from django.contrib.auth.models import User
 
 class Album(models.Model):
     name = models.CharField(max_length=255)
-    slides_num = models.IntegerField(default=0)
     owner = models.ForeignKey(User)
 
 class Slide(models.Model):

@@ -16,7 +16,6 @@
                 <tr>
                     <th style="text-align: center;">Album name</th>
                     <th style="text-align: center;">Album id</th>
-                    <th style="text-align: center;">Slides</th>
                 </tr>
                 {% for a in albums %}
                 <tr>
@@ -25,9 +24,6 @@
                     </td>
                     <td>
                         {{a.id}}
-                    </td>
-                    <td>
-                        {{a.slides_num}}
                     </td>
                 </tr>
                 {% endfor %}

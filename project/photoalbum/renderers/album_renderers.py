@@ -2,6 +2,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from photoalbum.models import Album, Slide
 
 def album_list_view(request):
+    #testing
     for i in range (0, 5):
         Album.objects.create(name=("Album " + str(i)), owner=request.user)
 
