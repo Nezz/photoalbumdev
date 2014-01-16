@@ -43,7 +43,10 @@ def loginHandler(request):
     return rest_helper(loginGet, None, loginPost, None, request)
 
 def loginGet(request):
-    return login_view(request);
+    if request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+    else:
+        return login_view(request);
 
 def loginPost(request):
     username = request.POST['username']
@@ -69,7 +72,10 @@ def registerHandler(request):
     return rest_helper(registerGet, None, registerPost, None, request)
 
 def registerGet(request):
-    return register_view(request);
+    if request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+    else:
+        return register_view(request);
 
 def registerPost(request):
     username = request.POST['username']
