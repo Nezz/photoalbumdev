@@ -45,6 +45,9 @@
     <Compile Include="photoalbum\tests\__init__.py" />
     <Compile Include="project\*.py" />
     <Compile Include="photoalbum\*.py" />
+    <Compile Include="photoalbum\handlers\*.py" />
+    <Compile Include="photoalbum\renderers\*.py" />
+    <Compile Include="photoalbum\tests\*.py" />
     <Compile Include="templates\*.html" />
   </ItemGroup>
   <ItemGroup>
