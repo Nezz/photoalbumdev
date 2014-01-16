@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+	{% load staticfiles %}
+	<head>
+	  	<title>Album {{album.name}}</title>
+	  	<link href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+	  	<link href="{% static 'bootstrap/dist/css/bootstrap-theme.css' %}" rel="stylesheet">
+	</head>
+	<body>
+		<script src="https://code.jquery.com/jquery.js"></script>
+	  	<script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+        <div class="container">
+            <h1>Album {{album.name}}</h1>
+        </div>
+	</body>
+</html>

@@ -9,6 +9,8 @@ from django.core.mail import send_mail
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 from django.template import Context
+from models import User, Album
+from django.core.exceptions import ObjectDoesNotExist
 
 
 # Create your views here.
@@ -72,3 +74,28 @@ def register_view(request):
         c = {}
         c.update(csrf(request))
         return render_to_response('register.html', c)
+
+def album_list_view(request):
+    if request.user.is_authenticated():
+        albums = Album.objects.filter(owner=request.user)
+        return render_to_response("album_list.html", {"albums": albums})
+    else:
+        c = {}
+        c.update(csrf(request))
+        return render_to_response('welcome.html', c)
+
+def album_view(request, album_id):
+    if request.user.is_authenticated():
+        try:
+            album = Album.objects.get(id=album_id)
+            if (album.owner == request.user):
+                return render_to_response("album.html", {"album": album})
+            else:
+                return render_to_response("album_denied.html", {"id": album_id})
+        except ObjectDoesNotExist:
+            return render_to_response("album_denied.html", {"id": album_id})
+    else:
+        c = {}
+        c.update(csrf(request))
+        return render_to_response('welcome.html', c)
+

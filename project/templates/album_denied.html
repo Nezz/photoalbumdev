@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+	{% load staticfiles %}
+	<head>
+	  	<title>Access denied</title>
+	  	<link href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+	  	<link href="{% static 'bootstrap/dist/css/bootstrap-theme.css' %}" rel="stylesheet">
+	</head>
+	<body>
+		<script src="https://code.jquery.com/jquery.js"></script>
+	  	<script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+        <div class="container">
+            <h1>Album with id = {{id}} either doesn't exist or you don't have access to it</h1>
+        </div>
+	</body>
+</html>
