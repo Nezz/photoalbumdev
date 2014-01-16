@@ -11,6 +11,8 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', 'photoalbum.views.index_view'),
     url(r'^login/$', 'photoalbum.views.login_view'),
+    url(r'^albums/(?P<album_id>([0-9a-zA-Z])*)/$', 'photoalbum.views.album_view'),
+    url(r'^albums/$', 'photoalbum.views.album_list_view'),
     url(r'^register/$', 'photoalbum.views.register_view'),
     url(r'^logout/$', 'photoalbum.views.logout_view'),
 )
