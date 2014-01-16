@@ -5,7 +5,7 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <Name>project</Name>
     <RootNamespace>project</RootNamespace>
-    <InterpreterId>{1040caab-89d0-410c-b14c-a62f148130a2}</InterpreterId>
+    <InterpreterId>{5298dc95-421c-41da-aa4b-7e33c53ebc61}</InterpreterId>
     <InterpreterVersion>2.7</InterpreterVersion>
   </PropertyGroup>
   <PropertyGroup>
@@ -31,6 +31,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="manage.py" />
+    <Compile Include="photoalbum\handlers\album_handlers.py" />
+    <Compile Include="photoalbum\handlers\order_handlers.py" />
+    <Compile Include="photoalbum\handlers\user_handlers.py" />
+    <Compile Include="photoalbum\handlers\__init__.py" />
+    <Compile Include="photoalbum\renderers\album_renderers.py" />
+    <Compile Include="photoalbum\renderers\order_renderers.py" />
+    <Compile Include="photoalbum\renderers\user_renderers.py" />
+    <Compile Include="photoalbum\renderers\__init__.py" />
+    <Compile Include="photoalbum\tests\test_album.py" />
+    <Compile Include="photoalbum\tests\test_order.py" />
+    <Compile Include="photoalbum\tests\test_user.py" />
+    <Compile Include="photoalbum\tests\__init__.py" />
     <Compile Include="project\*.py" />
     <Compile Include="photoalbum\*.py" />
     <Compile Include="templates\*.html" />
@@ -49,7 +61,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="photoalbum\" />
+    <Folder Include="photoalbum\handlers\" />
+    <Folder Include="photoalbum\renderers\" />
+    <Folder Include="photoalbum\tests\" />
     <Folder Include="project\" />
+    <Folder Include="templates\" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env\">
@@ -62,8 +78,8 @@
       <LibraryPath>Lib\</LibraryPath>
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
     </Interpreter>
-    <Interpreter Include="\env\">
-      <Id>{90e520cb-9610-4fcb-bba1-444de18d4a94}</Id>
+    <Interpreter Include="env\">
+      <Id>{5298dc95-421c-41da-aa4b-7e33c53ebc61}</Id>
       <BaseInterpreter>{2af0f10d-7135-4994-9156-5d01c9c11b7e}</BaseInterpreter>
       <Version>2.7</Version>
       <Description>env (Python 2.7)</Description>

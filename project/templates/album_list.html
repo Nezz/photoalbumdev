@@ -13,16 +13,21 @@
         <div class="container">
             <h1>Albums</h1>
             <table style="text-align: center;" class="table table-hover">
+                <tr>
+                    <th style="text-align: center;">Album name</th>
+                    <th style="text-align: center;">Album id</th>
+                    <th style="text-align: center;">Slides</th>
+                </tr>
                 {% for a in albums %}
                 <tr>
                     <td>
-                        {{a.name}}
-                    </td>
-                    <td>
-                        {{a.owner}}
+                        <a href="./albums/{{a.id}}/">{{a.name}}</a>
                     </td>
                     <td>
                         {{a.id}}
+                    </td>
+                    <td>
+                        {{a.slides_num}}
                     </td>
                 </tr>
                 {% endfor %}
