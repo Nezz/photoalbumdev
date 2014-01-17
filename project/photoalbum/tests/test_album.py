@@ -288,3 +288,64 @@ class album_tests(TestCase):
         self.client.login(username='admin', password='admin')
         response = self.client.post('/albums/albumtwo/1/modify', { "order" : "2", "template" : "3" }, follow=True)
         self.assertEquals(response.status_code, 403, "Testing request status code")
+
+    """
+     /<Album ID>/<Slide ID>/<Photo ID>
+	    * GET: Url of photo
+	    * POST: N/A
+    """
+    def test_photoGet(self):
+        response = self.client.get('/albums/albumone/1/1')
+        self.assertEquals(response.status_code, 302, "Testing request status code")
+
+        response = self.client.get('/albums/albumtwo/2/1')
+        self.assertEquals(response.status_code, 404, "Testing request status code")
+
+    """
+     /<Album ID>/<Slide ID>/<Photo ID>/modify
+	    * GET:
+		    * Owner login: URL editor (and future flickr stuff)
+		    * No login: Login page 
+	    * POST: Modify the url and the description of the photo (Owner only)
+    """
+    def test_photoModifyGetNoLogin(self):
+        response = self.client.get('/albums/albumone/1/1/modify', follow=True)
+        self.assertEquals(response.status_code, 200, "Testing request status code")
+        self.assertTemplateUsed(response, "login.html", "Testing that the right template was rendered")
+
+    def test_photoModifyGetOwner(self):
+        self.client.login(username='admin', password='admin')
+        response = self.client.get('/albums/albumone/1/1/modify', follow=True)
+        self.assertEquals(response.status_code, 200, "Testing request status code")
+        self.assertTemplateUsed(response, "template.html", "Testing that the right template was rendered") # TODO
+
+    def test_photoModifyGetNonowner(self):
+        self.client.login(username='admin2', password='admin2')
+        response = self.client.get('/albums/albumone/1/1/modify', follow=True)
+        self.assertEquals(response.status_code, 403, "Testing request status code")
+
+    def test_photoModifyPostNoparams(self):
+        response = self.client.post('/albums/albumone/1/1/modify', follow=True)
+        self.assertEquals(response.status_code, 400, "Testing request status code")
+
+    def test_photoModifyPostEmptyparams(self):
+        self.client.login(username='admin', password='admin')
+        self.client.login(username='admin', password='admin')
+        response = self.client.post('/albums/albumone/1/1/modify', { "link" : "", "description" : "" }, follow=True)
+        self.assertEquals(response.status_code, 200, "Testing request status code")
+
+    def test_photoModifyPostNologin(self):
+        response = self.client.post('/albums/albumone/1/1/modify', { "link" : "http://www.songarc.net", "description" : "test"  }, follow=True)
+        self.assertEquals(response.status_code, 403, "Testing request status code")
+
+    def test_photoModifyPostOwner(self):
+        self.client.login(username='admin', password='admin')
+        response = self.client.post('/albums/albumone/1/1/modify', { "link" : "http://www.songarc.net", "description" : "test"  }, follow=True)
+        self.assertEquals(response.status_code, 200, "Testing request status code")
+        self.assertTemplateUsed(response, "album.html", "Testing that the right template was rendered")
+        # TODO: Test if worked
+   
+    def test_photoModifyPostNonowner(self):
+        self.client.login(username='admin2', password='admin2')
+        response = self.client.post('/albums/albumone/1/1/modify', { "link" : "http://www.songarc.net", "description" : "test"  }, follow=True)
+        self.assertEquals(response.status_code, 403, "Testing request status code")

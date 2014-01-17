@@ -31,6 +31,8 @@
                         {% if editable %}
                         <td>
                             <form action="/albums/{{album.guid}}/{{curr}}/{{photo.pk}}/modify" method="post">{% csrf_token %}
+                                <input type="text" placeholder="Description" name="description">
+                                <input type="text" placeholder="Link" name="link">
                                 <button type="submit">Modify</button>
                             </form>
                         </td>

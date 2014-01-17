@@ -20,7 +20,7 @@ def albumitemGet(request, album_id):
     return album_view(request, album_id)
 
 def albumitemPost(request, album_id):
-    album = Album.objects.get(guid=album_id)
+    album = get_object_or_404(Album, guid=album_id)
     if album.owner == request.user:
         newSlide = Slide.objects.create(template=0, album=album)
         for i in range(0,4):
@@ -112,7 +112,7 @@ def slidedeleteHandler(request, album_id, slide_id):
     return rest_helper(slidedeleteGet, slidedeletePost, request, album_id, slide_id)
 
 def slidedeleteGet(request, album_id, slide_id):
-    album = Album.objects.get(guid = album_id)
+    album = get_object_or_404(Album, guid=album_id)
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
     elif album.owner == request.user:
@@ -183,7 +183,14 @@ def slidephotoHandler(request, album_id, slide_id, photo_id):
     return rest_helper(slidephotoGet, None, request, album_id, slide_id, photo_id)
 
 def slidephotoGet(request, album_id, slide_id, photo_id):
-    photo = Photo.objects.get(pk=photo_id)
+    slide_id = int(slide_id)
+    album = get_object_or_404(Album, guid=album_id)
+
+    if len(album.get_slide_order()) < int(slide_id):
+        raise Http404();
+
+    slide = get_object_or_404(Slide, pk=album.get_slide_order()[slide_id - 1])
+    photo = get_object_or_404(Photo, pk=photo_id, slide=slide)
     return HttpResponseRedirect(photo.link)
 
 """
@@ -191,13 +198,37 @@ def slidephotoGet(request, album_id, slide_id, photo_id):
 	* GET:
 		* Owner login: URL editor (and future flickr stuff)
 		* No login: Login page 
-	* POST: Modify the url of the photo (Owner only)
+	* POST: Modify the url and the description of the photo (Owner only)
 """
 def slidephotomodifyHandler(request, album_id, slide_id, photo_id):
-    return rest_helper(slidemodifyGet, slidephotomodifyGet, request, album_id, slide_id, photo_id)
+    return rest_helper(slidephotomodifyGet, slidephotomodifyPost, request, album_id, slide_id, photo_id)
 
 def slidephotomodifyGet(request, album_id, slide_id, photo_id):
-    raise Http404(); # TODO
+    album = get_object_or_404(Album, guid=album_id)
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    elif album.owner == request.user:
+        raise Http404(); # TODO
+    else:
+        return HttpResponseForbidden()
 
 def slidephotomodifyPost(request, album_id, slide_id, photo_id):
-    raise Http404(); # TODO
+    if 'description' in request.POST or 'link' in request.POST: # May be empty, no need to check
+        album = get_object_or_404(Album, guid=album_id)
+        if album.owner == request.user:
+            slide_id = int(slide_id)
+            if len(album.get_slide_order()) < slide_id:
+                raise Http404();
+
+            slide = get_object_or_404(Slide, pk=album.get_slide_order()[slide_id - 1])
+
+            photo = get_object_or_404(Photo, pk=photo_id, slide=slide)
+
+            photo.description = str(request.POST['description'])
+            photo.link = str(request.POST['link']) # TODO: Verify if valid link to an image
+            photo.save()
+            return HttpResponseRedirect('/albums/' + str(album_id) + '/' + str(slide_id))
+        else:
+            return HttpResponseForbidden()
+    else:
+        return HttpResponseBadRequest()
