@@ -16,16 +16,16 @@
                     <th style="text-align: center;">Album name</th>
                     <th style="text-align: center;">Album id</th>
                 </tr>
-                {% for a in albums %}
+                {% for album in albums %}
                 <tr>
                     <td>
-                        <a href="/albums/{{a.id}}/">{{a.name}}</a>
+                        <a href="/albums/{{album.guid}}/">{{album.name}}</a>
                     </td>
                     <td>
-                        {{a.id}}
+                        {{album.guid}}
                     </td>
                     <td>
-                        <form action="/albums/{{a.id}}/delete" method="post">{% csrf_token %}
+                        <form action="/albums/{{album.guid}}/delete" method="post">{% csrf_token %}
                             <button type="submit">Delete</button>
                         </form>
                     </td>

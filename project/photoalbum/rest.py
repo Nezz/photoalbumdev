@@ -1,4 +1,4 @@
-def rest_helper(getResponse, postResponse, request, extraArgs=None):
+def rest_helper(getResponse, postResponse, request, *extraArgs):
     if request.method == 'GET':
         if getResponse is not None:
             if extraArgs is not None:

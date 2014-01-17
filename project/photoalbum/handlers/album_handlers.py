@@ -20,7 +20,15 @@ def albumitemGet(request, album_id):
     return album_view(request, album_id)
 
 def albumitemPost(request, album_id):
-    raise Http404(); # TODO
+    album = Album.objects.get(guid=album_id)
+    if album.owner == request.user:
+        newSlide = Slide.objects.create(template=0, album=album)
+        for i in range(0,4):
+            Photo.objects.create(slide=newSlide)
+
+        return HttpResponseRedirect('/albums/' + str(album_id) + '/' + str(len(album.get_slide_order())))
+    else:
+        return HttpResponseForbidden();
 
 """
  /<Album ID>/delete
@@ -29,15 +37,35 @@ def albumitemPost(request, album_id):
 		* No login: Login page 
 	* POST: Delete album (Owner only)
 """
-def albumitemdeleteHandler(request, album_id):
-    return rest_helper(albumitemdeleteGet, albumitemdeletePost, request, album_id)
+def albumdeleteHandler(request, album_id):
+    return rest_helper(albumdeleteGet, albumdeletePost, request, album_id)
 
-def albumitemdeleteGet(request, album_id):
+def albumdeleteGet(request, album_id):
     raise Http404(); # TODO
 
-def albumitemdeletePost(request, album_id):
-    Album.objects.get(pk = album_id).delete()
+def albumdeletePost(request, album_id):
+    Album.objects.get(guid = album_id).delete()
     return HttpResponseRedirect('/albums/')
+
+"""
+ /<Album ID>/modify
+	* GET:
+		* Owner login: Edit album name
+		* No login: Login page
+	* POST: Modify album name (Owner only)
+"""
+def albummodifyHandler(request, album_id):
+    return rest_helper(albummodifyGet, albummodifyPost, request, album_id)
+
+def albummodifyGet(request, album_id):
+    raise Http404(); # TODO
+
+def albummodifyPost(request, album_id):
+    if request.POST['name']:
+        album = Album.objects.get(guid = album_id)
+        album.name = request.POST['name']
+        album.save()
+    return HttpResponseRedirect('/albums/' + str(album_id))
 
 """
  /<Album ID>/<Slide ID>
@@ -50,7 +78,7 @@ def slideitemHandler(request, album_id, slide_id):
     return rest_helper(slideitemGet, None, request, album_id, slide_id)
 
 def slideitemGet(request, album_id, slide_id):
-    raise Http404(); # TODO
+    return album_view(request, album_id, slide_id)
 
 """
  /<Album ID>/<Slide ID>/delete
@@ -60,14 +88,16 @@ def slideitemGet(request, album_id, slide_id):
 	* POST: Delete slide (Owner only)
 """
 def slidedeleteHandler(request, album_id, slide_id):
-    return rest_helper(slidedeleteGet, None, slidedeletePost, None, request, album_id, slide_id)
+    return rest_helper(slidedeleteGet, slidedeletePost, request, album_id, slide_id)
 
 def slidedeleteGet(request, album_id, slide_id):
     raise Http404(); # TODO
 
-def slidedeletePost(request):
-    Album.delete(pk = album_id)
-    return HttpResponseRedirect('/albums/')
+def slidedeletePost(request, album_id, slide_id):
+    album = get_object_or_404(Album, guid=album_id)
+    slide = get_object_or_404(Slide, pk=album.get_slide_order()[int(slide_id) - 1])
+    slide.delete();
+    return HttpResponseRedirect('/albums/' + str(album_id))
 
 """
  /<Album ID>/<Slide ID>/modify
@@ -82,7 +112,7 @@ def slidemodifyHandler(request, album_id, slide_id):
 def slidemodifyGet(request, album_id, slide_id):
     raise Http404(); # TODO
 
-def slidemodifyPost(request):
+def slidemodifyPost(request, album_id, slide_id):
     raise Http404(); # TODO
 
 """
@@ -94,7 +124,8 @@ def slidephotoHandler(request, album_id, slide_id, photo_id):
     return rest_helper(slidephotoGet, None, request, album_id, slide_id, photo_id)
 
 def slidephotoGet(request, album_id, slide_id, photo_id):
-    raise Http404(); # TODO
+    photo = Photo.objects.get(pk=photo_id)
+    return HttpResponseRedirect(photo.link)
 
 """
  /<Album ID>/<Slide ID>/<Photo ID>/modify
