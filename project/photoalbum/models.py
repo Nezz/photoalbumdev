@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 
 class Album(models.Model):
     name = models.CharField(max_length=255)
+    guid = models.CharField(max_length=8, db_index=True)
     owner = models.ForeignKey(User)
 
 class Slide(models.Model):
@@ -21,6 +22,9 @@ class Photo(models.Model):
     link = models.URLField(max_length=255, blank=True)
     description = models.TextField()
     slide = models.ForeignKey('Slide')
+
+    class Meta:
+        order_with_respect_to = 'slide'
 
 class Order(models.Model):
     time_placed = models.TimeField()

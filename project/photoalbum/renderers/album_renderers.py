@@ -1,20 +1,38 @@
 from django.shortcuts import render_to_response, get_object_or_404
-from photoalbum.models import Album, Slide
+from django.http import HttpResponse
+from django.core.context_processors import csrf
+from django.core.exceptions import ObjectDoesNotExist
+from photoalbum.models import Album, Slide, Photo
 
 def album_list_view(request):
-    #testing
-    for i in range (0, 5):
-        Album.objects.create(name=("Album " + str(i)), owner=request.user)
-
     albums = Album.objects.filter(owner=request.user)
-    #for a in albums:
-    #    slides = Slide.objects.filter(album=a)
-    #    a.slides_num = len(slides)
-    return render_to_response("album_list.html", {"albums": albums})
+    c = {"albums": albums}
+    c.update(csrf(request))
+    return render_to_response("album_list.html", c)
 
-def album_view(request, album_id):
-    album = get_object_or_404(Album, id=album_id)
-    if (album.owner == request.user):
-        return render_to_response("album.html", {"album": album}) # TODO: Album editor
+def album_view(request, album_id, slide_id=1):
+    slide_id = int(slide_id)
+    album = get_object_or_404(Album, guid=album_id)
+    slide = get_object_or_404(Slide, pk=album.get_slide_order()[slide_id - 1])
+
+    curr = slide_id
+
+    if (slide_id > 1):
+        prev = slide_id - 1
     else:
-        return render_to_response("album.html", {"album": album}) # TODO: Album viewer
+        prev = None
+
+    if (slide_id < len(album.get_slide_order())):
+        next = slide_id + 1
+    else:
+        next = None
+
+    photos = Photo.objects.filter(slide=slide)
+    editable = album.owner == request.user
+
+    c = {"album": album, "curr" : curr, "next" : next, "prev" : prev, "photos" : photos, "editable" : editable}
+    c.update(csrf(request))
+    if (album.owner == request.user):
+        return render_to_response("album.html", c) # TODO: Album editor
+    else:
+        return render_to_response("album.html", c) # TODO: Album viewer

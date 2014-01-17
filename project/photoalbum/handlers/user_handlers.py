@@ -5,20 +5,21 @@ from django.template import Context
 from photoalbum.rest import rest_helper
 from photoalbum.renderers.user_renderers import *
 from photoalbum.renderers.album_renderers import album_list_view
+from photoalbum.handlers.album_handlers import albumitemPost
+from photoalbum.models import Album
+import string
+import random
 
 """
  /
-	? GET:
-		? Logged in: List of albums
-		? No login: Welcome page
-	? PUT: N/A
-	? POST:
-		? Logged in: New album
-		? No login: N/A
-	? DELETE: N/A
+	* GET:
+		* Logged in: List of albums
+		* No login: Welcome page
+	* POST:
+		* New album (Owner only)
 """
 def indexHandler(request):
-    return rest_helper(indexGet, None, indexPost, None, request)
+    return rest_helper(indexGet, indexPost, request)
 
 def indexGet(request):
     if request.user.is_authenticated():
@@ -28,19 +29,19 @@ def indexGet(request):
 
 def indexPost(request):
     if request.user.is_authenticated():
-        raise Http404(); # TODO: New album
+        guid = ''.join(random.choice(string.ascii_lowercase + string.digits) for x in range(8))
+        newAlbum = Album.objects.create(name="New album", guid=guid, owner=request.user)
+        return albumitemPost(request, newAlbum.guid)
     else:
         return HttpResponseForbidden();
 
 """
  /login/
-	? GET: Login page
-	? PUT: N/A
-	? POST: Login user
-	? DELETE: N/A
+	* GET: Login page
+	* POST: Login user
 """
 def loginHandler(request):
-    return rest_helper(loginGet, None, loginPost, None, request)
+    return rest_helper(loginGet, loginPost, request)
 
 def loginGet(request):
     if request.user.is_authenticated():
@@ -63,13 +64,11 @@ def loginPost(request):
 
 """
  /register/
-	? GET: Register page
-	? PUT: N/A
-	? POST: Register user
-	? DELETE: N/A
+	* GET: Register page
+	* POST: Register user
 """
 def registerHandler(request):
-    return rest_helper(registerGet, None, registerPost, None, request)
+    return rest_helper(registerGet, registerPost, request)
 
 def registerGet(request):
     if request.user.is_authenticated():
@@ -86,11 +85,8 @@ def registerPost(request):
 
 """
  /logout/
- 	? GET: Logout user
-	? PUT: N/A
-	? POST: N/A
-	? DELETE: N/A
-
+ 	* GET: Logout user
+	* POST: N/A
 """
 def logoutHandler(request):
     logout(request)
