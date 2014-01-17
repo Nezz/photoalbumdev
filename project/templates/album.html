@@ -50,9 +50,23 @@
             {% endif %}
             {% if prev %}
             <a id="prevbutton" href="/albums/{{album.guid}}/{{prev}}">Previous</a>
+                {% if editable %}
+                <form action="/albums/{{album.guid}}/{{curr}}/modify" method="post">{% csrf_token %}
+                    <input type='hidden' name='order' value='{{prev}}' />
+                    <input type='hidden' name='template' value='1' />
+                    <button id="deletebutton" type="submit">Move prev</button>
+                </form>
+                {% endif %}
             {% endif %}
             {% if next %}
             <a id="nextbutton" href="/albums/{{album.guid}}/{{next}}">Next</a>
+                {% if editable %}
+                <form action="/albums/{{album.guid}}/{{curr}}/modify" method="post">{% csrf_token %}
+                    <input type='hidden' name='order' value='{{next}}' />
+                    <input type='hidden' name='template' value='1' />
+                    <button id="deletebutton" type="submit">Move next</button>
+                </form>
+                {% endif %}
             {% endif %}
             <a href="/albums/">Album list</a>
         </div>

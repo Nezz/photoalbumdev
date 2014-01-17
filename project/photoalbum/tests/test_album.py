@@ -240,3 +240,51 @@ class album_tests(TestCase):
         self.client.login(username='admin', password='admin')
         response = self.client.post('/albums/albumone/1/delete', follow=True)
         self.assertEquals(response.status_code, 403, "Testing request status code")
+
+    """
+     /<Album ID>/<Slide ID>/modify
+	    * GET:
+		    * Owner login: Template editor
+		    * No login: Login page
+	    * POST: Modify order and template (Owner only)
+    """
+    def test_slideModifyGetNoLogin(self):
+        response = self.client.get('/albums/albumtwo/1/modify', follow=True)
+        self.assertEquals(response.status_code, 200, "Testing request status code")
+        self.assertTemplateUsed(response, "login.html", "Testing that the right template was rendered")
+
+    def test_slideModifyGetOwner(self):
+        self.client.login(username='admin2', password='admin2')
+        response = self.client.get('/albums/albumtwo/1/modify', follow=True)
+        self.assertEquals(response.status_code, 200, "Testing request status code")
+        self.assertTemplateUsed(response, "template.html", "Testing that the right template was rendered") # TODO
+
+    def test_slideModifyGetNonowner(self):
+        self.client.login(username='admin', password='admin')
+        response = self.client.get('/albums/albumtwo/1/modify', follow=True)
+        self.assertEquals(response.status_code, 403, "Testing request status code")
+
+    def test_slideModifyPostNoparams(self):
+        response = self.client.post('/albums/albumtwo/1/modify', follow=True)
+        self.assertEquals(response.status_code, 400, "Testing request status code")
+
+    def test_slideModifyPostBadparams(self):
+        self.client.login(username='admin2', password='admin2')
+        response = self.client.post('/albums/albumtwo/1/modify', { "order" : "4", "template" : "3" }, follow=True)
+        self.assertEquals(response.status_code, 400, "Testing request status code")
+
+    def test_slideModifyPostNologin(self):
+        response = self.client.post('/albums/albumtwo/1/modify', { "order" : "2", "template" : "3" }, follow=True)
+        self.assertEquals(response.status_code, 403, "Testing request status code")
+
+    def test_slideModifyPostOwner(self):
+        self.client.login(username='admin2', password='admin2')
+        response = self.client.post('/albums/albumtwo/1/modify', { "order" : "2", "template" : "3" }, follow=True)
+        self.assertEquals(response.status_code, 200, "Testing request status code")
+        self.assertTemplateUsed(response, "album.html", "Testing that the right template was rendered")
+        # TODO: Test if worked
+
+    def test_slideModifyPostNonowner(self):
+        self.client.login(username='admin', password='admin')
+        response = self.client.post('/albums/albumtwo/1/modify', { "order" : "2", "template" : "3" }, follow=True)
+        self.assertEquals(response.status_code, 403, "Testing request status code")
