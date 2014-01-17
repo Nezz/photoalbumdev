@@ -1,4 +1,4 @@
-from django.http import HttpResponse, Http404, HttpResponseForbidden, HttpResponseRedirect
+from django.http import HttpResponse, Http404, HttpResponseForbidden, HttpResponseRedirect, HttpResponseBadRequest
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.template import Context
@@ -41,11 +41,21 @@ def albumdeleteHandler(request, album_id):
     return rest_helper(albumdeleteGet, albumdeletePost, request, album_id)
 
 def albumdeleteGet(request, album_id):
-    raise Http404(); # TODO
+    album = get_object_or_404(Album, guid=album_id)
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    elif album.owner == request.user:
+        raise Http404(); # TODO
+    else:
+        return HttpResponseForbidden()
 
 def albumdeletePost(request, album_id):
-    Album.objects.get(guid = album_id).delete()
-    return HttpResponseRedirect('/albums/')
+    album = get_object_or_404(Album, guid=album_id)
+    if album.owner == request.user:
+        album.delete()
+        return HttpResponseRedirect('/albums/')
+    else:
+        return HttpResponseForbidden()
 
 """
  /<Album ID>/modify
@@ -58,14 +68,25 @@ def albummodifyHandler(request, album_id):
     return rest_helper(albummodifyGet, albummodifyPost, request, album_id)
 
 def albummodifyGet(request, album_id):
-    raise Http404(); # TODO
+    album = get_object_or_404(Album, guid=album_id)
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    elif album.owner == request.user:
+        raise Http404(); # TODO
+    else:
+        return HttpResponseForbidden()
 
 def albummodifyPost(request, album_id):
-    if request.POST['name']:
-        album = Album.objects.get(guid = album_id)
-        album.name = request.POST['name']
-        album.save()
-    return HttpResponseRedirect('/albums/' + str(album_id))
+    if 'name' in request.POST and request.POST['name']:
+        album = get_object_or_404(Album, guid=album_id)
+        if album.owner == request.user:
+            album.name = request.POST['name']
+            album.save()
+            return HttpResponseRedirect('/albums/' + str(album_id))
+        else:
+            return HttpResponseForbidden()
+    else:
+        return HttpResponseBadRequest()
 
 """
  /<Album ID>/<Slide ID>
@@ -91,13 +112,25 @@ def slidedeleteHandler(request, album_id, slide_id):
     return rest_helper(slidedeleteGet, slidedeletePost, request, album_id, slide_id)
 
 def slidedeleteGet(request, album_id, slide_id):
-    raise Http404(); # TODO
+    album = Album.objects.get(guid = album_id)
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    elif album.owner == request.user:
+        raise Http404(); # TODO
+    else:
+        return HttpResponseForbidden()
 
 def slidedeletePost(request, album_id, slide_id):
     album = get_object_or_404(Album, guid=album_id)
-    slide = get_object_or_404(Slide, pk=album.get_slide_order()[int(slide_id) - 1])
-    slide.delete();
-    return HttpResponseRedirect('/albums/' + str(album_id))
+    if album.owner == request.user and len(album.get_slide_order()) > 1:
+        if len(album.get_slide_order()) < int(slide_id):
+            raise Http404();
+        else:
+            slide = get_object_or_404(Slide, pk=album.get_slide_order()[int(slide_id) - 1])
+            slide.delete();
+            return HttpResponseRedirect('/albums/' + str(album_id))
+    else:
+        return HttpResponseForbidden()
 
 """
  /<Album ID>/<Slide ID>/modify

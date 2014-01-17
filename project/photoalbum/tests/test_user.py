@@ -34,13 +34,14 @@ class user_tests(TestCase):
         self.assertTemplateUsed(response, "album_list.html", "Testing that the right template was rendered")
 
     def test_indexPostNoLogin(self):
-        response = self.client.post('/')
-        self.assertNotEquals(response.status_code, 200, "Testing request status code")
+        response = self.client.post('/', follow=True)
+        self.assertEquals(response.status_code, 403, "Testing request status code")
 
     def test_indexPostLogin(self):
         self.assertTrue(self.client.login(username='admin', password='admin'))
-        response = self.client.post('/')
+        response = self.client.post('/', follow=True)
         self.assertEquals(response.status_code, 200, "Testing request status code")
+        self.assertTemplateUsed(response, "album.html", "Testing that the right template was rendered")
 
     """
      /login/

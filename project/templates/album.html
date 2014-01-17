@@ -40,19 +40,19 @@
             </table>
             {% if editable %}
                 <form action="/albums/{{album.guid}}/" method="post">{% csrf_token %}
-                    <button type="submit">New slide</button>
+                    <button id="newslide" type="submit">New slide</button>
                 </form>
                 {% if prev or next %}
                 <form action="/albums/{{album.guid}}/{{curr}}/delete" method="post">{% csrf_token %}
-                    <button type="submit">Delete slide</button>
+                    <button id="deletebutton" type="submit">Delete slide</button>
                 </form>
                 {% endif %}
             {% endif %}
             {% if prev %}
-            <a href="/albums/{{album.guid}}/{{prev}}">Previous</a>
+            <a id="prevbutton" href="/albums/{{album.guid}}/{{prev}}">Previous</a>
             {% endif %}
             {% if next %}
-            <a href="/albums/{{album.guid}}/{{next}}">Next</a>
+            <a id="nextbutton" href="/albums/{{album.guid}}/{{next}}">Next</a>
             {% endif %}
             <a href="/albums/">Album list</a>
         </div>
