@@ -143,10 +143,36 @@ def slidemodifyHandler(request, album_id, slide_id):
     return rest_helper(slidemodifyGet, slidemodifyPost, request, album_id, slide_id)
 
 def slidemodifyGet(request, album_id, slide_id):
-    raise Http404(); # TODO
+    album = get_object_or_404(Album, guid=album_id)
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    elif album.owner == request.user:
+        raise Http404(); # TODO
+    else:
+        return HttpResponseForbidden()
 
 def slidemodifyPost(request, album_id, slide_id):
-    raise Http404(); # TODO
+    if 'order' in request.POST and request.POST['order'] and 'template' in request.POST and request.POST['template']:
+        album = get_object_or_404(Album, guid=album_id)
+        if album.owner == request.user and len(album.get_slide_order()) > 1:
+            if len(album.get_slide_order()) < int(slide_id):
+                raise Http404();
+            elif int(request.POST['order']) > len(album.get_slide_order()):
+                return HttpResponseBadRequest()
+            else:
+                slide = get_object_or_404(Slide, pk=album.get_slide_order()[int(slide_id) - 1])
+
+                slide.template = int(request.POST['template'])
+                slide.save()
+
+                order = album.get_slide_order()
+                order.insert(int(request.POST['order']) - 1, order.pop(int(slide_id) - 1))
+                album.set_slide_order(order)
+                return HttpResponseRedirect('/albums/' + str(album_id) +  '/' + request.POST['order'])
+        else:
+            return HttpResponseForbidden()
+    else:
+        return HttpResponseBadRequest()
 
 """
  /<Album ID>/<Slide ID>/<Photo ID>
