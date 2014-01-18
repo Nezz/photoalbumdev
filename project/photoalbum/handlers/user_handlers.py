@@ -7,6 +7,8 @@ from photoalbum.renderers.user_renderers import *
 from photoalbum.renderers.album_renderers import album_list_view
 from photoalbum.handlers.album_handlers import albumitemPost
 from photoalbum.models import Album
+from django import forms
+from django.core.validators import validate_email
 import string
 import random
 
@@ -77,10 +79,14 @@ def registerGet(request):
         return register_view(request);
 
 def registerPost(request):
-    username = request.POST['username']
+    usernam = request.POST['username']
     password = request.POST['password']
     email = request.POST['email']
-    user = User.objects.create_user(username, email, password)
+    
+    if User.objects.filter(username=usernam).exists():
+    	return HttpResponse("User already exists")
+    	     
+    user = User.objects.create_user(usernam, email, password)
     return HttpResponseRedirect('/login/')
 
 """
