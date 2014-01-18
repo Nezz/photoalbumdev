@@ -11,9 +11,15 @@ class Album(models.Model):
     guid = models.CharField(max_length=8, db_index=True)
     owner = models.ForeignKey(User)
 
+    def __str__(self):
+        return 'Album "%s" by %s (GUID: %s, ID: %s)' % (self.name, self.owner, self.guid, self.pk)
+
 class Slide(models.Model):
     template = models.IntegerField(default=0)
     album = models.ForeignKey('Album')
+
+    def __str__(self):
+        return 'Slide (ID: %s) for album %s' % (self.pk, str(self.album))
 
     class Meta:
         order_with_respect_to = 'album'
@@ -23,6 +29,9 @@ class Photo(models.Model):
     description = models.TextField()
     slide = models.ForeignKey('Slide')
 
+    def __str__(self):
+        return 'Photo "%s" (ID: %s) for %s' % (self.description, self.pk, str(self.slide))
+
     class Meta:
         order_with_respect_to = 'slide'
 
@@ -30,3 +39,6 @@ class Order(models.Model):
     time_placed = models.TimeField()
     album = models.ForeignKey('Album')
     owner = models.ForeignKey(User)
+
+    def __str__(self):
+        return 'Order #%s for %s' % (self.pk, str(self.album))
