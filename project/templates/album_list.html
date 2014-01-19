@@ -26,14 +26,14 @@
                     </td>
                     <td>
                         <form action="/albums/{{album.guid}}/delete" method="post">{% csrf_token %}
-                            <button type="submit">Delete</button>
+                            <button type="submit" class="btn btn-danger">Delete</button>
                         </form>
                     </td>
                 </tr>
                 {% endfor %}
             </table>
             <form action="/albums/" method="post">{% csrf_token %}
-                <button type="submit">New album</button>
+                <button type="submit" class="btn btn-primary">New album</button>
             </form>
             <a href="/logout/">Logout</a>
         </div>
