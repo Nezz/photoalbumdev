@@ -1,4 +1,4 @@
-from django.http import HttpResponse, Http404, HttpResponseForbidden, HttpResponseRedirect
+from django.http import HttpResponse, Http404, HttpResponseForbidden, HttpResponseRedirect, HttpResponseBadRequest
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.template import Context
@@ -79,14 +79,14 @@ def registerGet(request):
         return register_view(request);
 
 def registerPost(request):
-    usernam = request.POST['username']
+    username = request.POST['username']
     password = request.POST['password']
     email = request.POST['email']
     
-    if User.objects.filter(username=usernam).exists():
-    	return HttpResponse("User already exists")
+    if User.objects.filter(username=username).exists():
+    	return HttpResponseBadRequest()
     	     
-    user = User.objects.create_user(usernam, email, password)
+    user = User.objects.create_user(username, email, password)
     return HttpResponseRedirect('/login/')
 
 """
