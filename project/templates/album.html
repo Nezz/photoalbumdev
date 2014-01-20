@@ -1,88 +1,75 @@
-<!DOCTYPE html>
-<html>
-	{% load staticfiles %}
-	<head>
-	  	<title>Album {{album.name}}</title>
-	  	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
-	  	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css" rel="stylesheet">
-	</head>
-	<body>
-		<script src="https://code.jquery.com/jquery.js"></script>
-	  	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-        <div class="container">
-            <h1>{{album.name}}</h1>
+{% extends "base.html" %}
+{% block title %}Album {{album.name}}{% endblock %}
+{% block content %}
+<form class="form-inline" role="form" action="/albums/{{album.guid}}/modify" method="post">{% csrf_token %}
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="New name" id="name" name="name" required/>
+    </div>
+    <button type="submit" class="btn btn-default">Change</button>
+</form>
             
-            <form class="form-inline" role="form" action="/albums/{{album.guid}}/modify" method="post">{% csrf_token %}
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="New name" id="name" name="name" required/>
-                </div>
-                <button type="submit" class="btn btn-default">Change</button>
-            </form>
-            
-            <table style="text-align: center;" class="table table-hover">
-                <tr>
-                    <th style="text-align: center;">Photo</th>
-                    <th style="text-align: center;">Id</th>
-                </tr>
-                {% for photo in photos %}
-                    <tr>
-                        <td>
-                            <a href="{{photo.link}}">{{photo.description}}</a>
-                        </td>
-                        <td>
-                            {{photo.pk}}
-                        </td>
-                        {% if editable %}
-                        <td>
-                            <form class="form-inline" role="form" action="/albums/{{album.guid}}/{{curr}}/{{photo.pk}}/modify" method="post">{% csrf_token %}
-                                <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Description" name="description">                                                                     
-                                </div>
-                                <div class="form-group">
-                                     <input type="text" class="form-control" placeholder="Link" name="link">
-                                </div>
-                                <button type="submit" class="btn btn-default">Modify</button>
-                            </form>
-                        </td>
-                        {% endif %}
-                    </tr>
-                {% endfor %}
-            </table>
+<table style="text-align: center;" class="table table-hover">
+    <tr>
+        <th style="text-align: center;">Photo</th>
+        <th style="text-align: center;">Id</th>
+    </tr>
+    {% for photo in photos %}
+        <tr>
+            <td>
+                <a href="{{photo.link}}">{{photo.description}}</a>
+            </td>
+            <td>
+                {{photo.pk}}
+            </td>
             {% if editable %}
-                <form action="/albums/{{album.guid}}/" method="post">{% csrf_token %}
-                    <button id="newslide" type="submit" class="btn btn-default">New slide</button>
+            <td>
+                <form class="form-inline" role="form" action="/albums/{{album.guid}}/{{curr}}/{{photo.pk}}/modify" method="post">{% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Description" name="description">                                                                     
+                    </div>
+                    <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Link" name="link">
+                    </div>
+                    <button type="submit" class="btn btn-default">Modify</button>
                 </form>
-                {% if prev or next %}
-                <form action="/albums/{{album.guid}}/{{curr}}/delete" method="post">{% csrf_token %}
-                    <button id="deletebutton" type="submit" class="btn btn-default">Delete slide</button>
-                </form>
-                {% endif %}
+            </td>
             {% endif %}
-            {% if prev %}
-            <a id="prevbutton" href="/albums/{{album.guid}}/{{prev}}">Previous</a>
-                {% if editable %}
-                <form action="/albums/{{album.guid}}/{{curr}}/modify" method="post">{% csrf_token %}
-                    <input type='hidden' name='order' value='{{prev}}' />
-                    <input type='hidden' name='template' value='1' />
-                    <button id="deletebutton" type="submit" class="btn btn-default">Move prev</button>
-                </form>
-                {% endif %}
-            {% endif %}
-            {% if next %}
-            <a id="nextbutton" href="/albums/{{album.guid}}/{{next}}">Next</a>
-                {% if editable %}
-                <form action="/albums/{{album.guid}}/{{curr}}/modify" method="post">{% csrf_token %}
-                    <input type='hidden' name='order' value='{{next}}' />
-                    <input type='hidden' name='template' value='1' />
-                    <button id="deletebutton" type="submit" class="btn btn-default">Move next</button>
-                </form>
-                {% endif %}
-            {% endif %}
-            <a href="/albums/">Album list</a>
-            <form class="form-inline" role="form" action="/albums/{{album.guid}}/order" method="post">{% csrf_token %}  
-                <input type='hidden' name='album_id' value='{{album.guid}}' />            
-                <button type="submit" class="btn btn-default">Create an order</button>
-            </form>
-        </div>
-	</body>
-</html>
+        </tr>
+    {% endfor %}
+</table>
+{% if editable %}
+    <form action="/albums/{{album.guid}}/" method="post">{% csrf_token %}
+        <button id="newslide" type="submit" class="btn btn-default">New slide</button>
+    </form>
+    {% if prev or next %}
+    <form action="/albums/{{album.guid}}/{{curr}}/delete" method="post">{% csrf_token %}
+        <button id="deletebutton" type="submit" class="btn btn-default">Delete slide</button>
+    </form>
+    {% endif %}
+{% endif %}
+{% if prev %}
+<a id="prevbutton" href="/albums/{{album.guid}}/{{prev}}">Previous</a>
+    {% if editable %}
+    <form action="/albums/{{album.guid}}/{{curr}}/modify" method="post">{% csrf_token %}
+        <input type='hidden' name='order' value='{{prev}}' />
+        <input type='hidden' name='template' value='1' />
+        <button id="deletebutton" type="submit" class="btn btn-default">Move prev</button>
+    </form>
+    {% endif %}
+{% endif %}
+{% if next %}
+<a id="nextbutton" href="/albums/{{album.guid}}/{{next}}">Next</a>
+    {% if editable %}
+    <form action="/albums/{{album.guid}}/{{curr}}/modify" method="post">{% csrf_token %}
+        <input type='hidden' name='order' value='{{next}}' />
+        <input type='hidden' name='template' value='1' />
+        <button id="deletebutton" type="submit" class="btn btn-default">Move next</button>
+    </form>
+    {% endif %}
+{% endif %}
+<a href="/albums/">Album list</a>
+<form class="form-inline" role="form" action="/albums/{{album.guid}}/order" method="post">{% csrf_token %}  
+    <input type='hidden' name='album_id' value='{{album.guid}}' />            
+    <button type="submit" class="btn btn-default">Create an order</button>
+</form>
+{% endblock %}

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    {% load staticfiles %}
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css" rel="stylesheet">
+        {% block styles %}{% endblock %}
+    </head>
+	<body>
+		<script src="https://code.jquery.com/jquery.js"></script>
+	    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+	    <script src="{% static 'bootbox/bootbox.min.js' %}"></script>
+        {% block scripts %} {% endblock %}
+        <div class="container">
+            {% include "navbar.html" %}
+	        {% block content %}{% endblock %}
+	    </div>
+    </body>
+</html>

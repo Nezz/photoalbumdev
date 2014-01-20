@@ -1,41 +1,29 @@
-<!DOCTYPE html>
-<html>
-	{% load staticfiles %}
-	<head>
-	  	<title>Albums you have created</title>
-	  	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
-	  	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css" rel="stylesheet">
-	</head>
-    <body>
-        <script src="https://code.jquery.com/jquery.js"></script>
-        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-        <div class="container">
-            <h1>Albums</h1>
-            <table style="text-align: center;" class="table table-hover">
-                <tr>
-                    <th style="text-align: center;">Album name</th>
-                    <th style="text-align: center;">Album id</th>
-                </tr>
-                {% for album in albums %}
-                <tr>
-                    <td>
-                        <a href="/albums/{{album.guid}}/">{{album.name}}</a>
-                    </td>
-                    <td>
-                        {{album.guid}}
-                    </td>
-                    <td>
-                        <form action="/albums/{{album.guid}}/delete" method="post">{% csrf_token %}
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
-            <form action="/albums/" method="post">{% csrf_token %}
-                <button type="submit" class="btn btn-primary">New album</button>
+{% extends "base.html" %}
+{% block title %}Your albums{% endblock %}
+{% block content %}
+<h1>Albums</h1>
+<table style="text-align: center;" class="table table-hover">
+    <tr>
+        <th style="text-align: center;">Album name</th>
+        <th style="text-align: center;">Album id</th>
+    </tr>
+    {% for album in albums %}
+    <tr>
+        <td>
+            <a href="/albums/{{album.guid}}/">{{album.name}}</a>
+        </td>
+        <td>
+            {{album.guid}}
+        </td>
+        <td>
+            <form action="/albums/{{album.guid}}/delete" method="post">{% csrf_token %}
+                <button type="submit" class="btn btn-danger">Delete</button>
             </form>
-            <a href="/logout/">Logout</a>
-        </div>
-    </body>
-</html>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+<form action="/albums/" method="post">{% csrf_token %}
+    <button type="submit" class="btn btn-primary">New album</button>
+</form>
+{% endblock %}
