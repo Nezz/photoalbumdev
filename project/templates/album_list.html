@@ -9,12 +9,12 @@
         <div class="thumbnail">
             <img data-src="holder.js/100%x180/sky/text:{{album.name}}">
             <div class="caption text-center">
-                    <a href="{% url 'albumitem' album_id=album.guid %}" class="btn btn-primary" role="button">Edit</a>
+                    <a href="{% url 'albumitem' album_id=album.guid %}" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit icons-padding"></span> Edit</a>
                     <form action="{% url 'neworder' album_id=album.guid %}" method="post">{% csrf_token %}
-                        <button type="submit" class="btn btn-success">Order</button>
+                        <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-shopping-cart icons-padding"></span> Order</button>
                     </form>
                     <form action="{% url 'albumitemdelete' album_id=album.guid %}" method="post">{% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Delete</button>
+                        <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-remove icons-padding"></span> Delete</button>
                     </form>
             </div>
         </div>
@@ -26,7 +26,7 @@
             <img data-src="holder.js/100%x180/social/text:New album">
             <div class="caption text-center">
                 <form action="{% url 'albumlist' %}" method="post">{% csrf_token %}
-                    <button type="submit" class="btn btn-primary">Create a new album</button>
+                    <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-plus icons-padding"></span> Create a new album</button>
                 </form>
             </div>
         </div>
