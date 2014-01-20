@@ -40,11 +40,11 @@
 </table>
 {% if editable %}
     <form action="/albums/{{album.guid}}/" method="post">{% csrf_token %}
-        <button id="newslide" type="submit" class="btn btn-default">New slide</button>
+        <button id="newslide" type="submit" class="btn btn-default"><span class="glyphicon glyphicon-plus icons-padding"></span> New slide</button>
     </form>
     {% if prev or next %}
     <form action="/albums/{{album.guid}}/{{curr}}/delete" method="post">{% csrf_token %}
-        <button id="deletebutton" type="submit" class="btn btn-default">Delete slide</button>
+        <button id="deletebutton" type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-remove icons-padding"></span> Delete slide</button>
     </form>
     {% endif %}
 {% endif %}
