@@ -1,33 +1,21 @@
-<!DOCTYPE html>
-<html>
-	{% load staticfiles %}
-	<head>
-	  	<title>Orders you have created</title>
-	  	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
-	  	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css" rel="stylesheet">
-	</head>
-    <body>
-        <script src="https://code.jquery.com/jquery.js"></script>
-        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-        <div class="container">
-            <h1>Orders</h1>
-            <table style="text-align: center;" class="table table-hover">
-                <tr>
-                    <th style="text-align: center;">Order album name</th>
-                    <th style="text-align: center;">Time placed</th>
-                </tr>
-                {% for order in orders %}
-                <tr>
-                    <td>
-                        {{order.album.name}}
-                    </td>
-                    <td>
-                        {{order.time_placed}}
-                    </td>                 
-                </tr>
-                {% endfor %}
-            </table>
-            <a href="/logout/">Logout</a>
-        </div>
-    </body>
-</html>
+{% extends "base.html" %}
+{% block title %}Your orders{% endblock %}
+{% block content %}
+<h1>Orders</h1>
+<table style="text-align: center;" class="table table-hover">
+    <tr>
+        <th style="text-align: center;">Order album name</th>
+        <th style="text-align: center;">Time placed</th>
+    </tr>
+    {% for order in orders %}
+    <tr>
+        <td>
+            {{order.album.name}}
+        </td>
+        <td>
+            {{order.time_placed}}
+        </td>                 
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
