@@ -7,16 +7,13 @@ from photoalbum.renderers.user_renderers import *
 from photoalbum.models import Album
 from django import forms
 from django.core.validators import validate_email
-import string
-import random
 
 """
  /
 	* GET:
 		* Logged in: List of albums
 		* No login: Welcome page
-	* POST:
-		* New album (Owner only)
+	* POST: N/A
 """
 def indexHandler(request):
     return rest_helper(indexGet, None, request)

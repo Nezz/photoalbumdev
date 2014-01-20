@@ -31,6 +31,36 @@ class album_tests(TestCase):
                 Photo.objects.create(slide=slide2)
 
     """
+     /albums/
+	    * GET:
+		    * Logged in: List of albums
+		    * No login: Login
+	    * POST:
+		    * New album (Owner only)
+    """
+
+    def test_albumsGetNoLogin(self):
+        response = self.client.get('/albums/', follow=True)
+        self.assertEquals(response.status_code, 200, "Testing request status code")
+        self.assertTemplateUsed(response, "login.html", "Testing that the right template was rendered")
+
+    def test_albumsGetLogin(self):
+        self.assertTrue(self.client.login(username='admin', password='admin'))
+        response = self.client.get('/albums/')
+        self.assertEquals(response.status_code, 200, "Testing request status code")
+        self.assertTemplateUsed(response, "album_list.html", "Testing that the right template was rendered")
+
+    def test_albumsPostNoLogin(self):
+        response = self.client.post('/albums/', follow=True)
+        self.assertEquals(response.status_code, 403, "Testing request status code")
+
+    def test_albumsPostLogin(self):
+        self.assertTrue(self.client.login(username='admin', password='admin'))
+        response = self.client.post('/albums/', follow=True)
+        self.assertEquals(response.status_code, 200, "Testing request status code")
+        self.assertTemplateUsed(response, "album.html", "Testing that the right template was rendered")
+
+    """
      /albums/<Album ID>/
 	    * GET:
 		    * Owner login: Album editor

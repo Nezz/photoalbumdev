@@ -5,6 +5,8 @@ from django.template import Context
 from photoalbum.rest import rest_helper
 from photoalbum.renderers.album_renderers import *
 from photoalbum.models import Album, Slide, Photo
+import random
+import string
 
 """
  /albums/
