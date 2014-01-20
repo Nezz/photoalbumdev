@@ -1,29 +1,35 @@
-{% extends "base.html" %}
+{% extends "base_panel.html" %}
 {% block title %}Your albums{% endblock %}
-{% block content %}
-<h1>Albums</h1>
-<table style="text-align: center;" class="table table-hover">
-    <tr>
-        <th style="text-align: center;">Album name</th>
-        <th style="text-align: center;">Album id</th>
-    </tr>
+{% block panelTitle %}Albums{% endblock %}
+{% block contentPanel %}
+
+<div class="row">
     {% for album in albums %}
-    <tr>
-        <td>
-            <a href="/albums/{{album.guid}}/">{{album.name}}</a>
-        </td>
-        <td>
-            {{album.guid}}
-        </td>
-        <td>
-            <form action="/albums/{{album.guid}}/delete" method="post">{% csrf_token %}
-                <button type="submit" class="btn btn-danger">Delete</button>
-            </form>
-        </td>
-    </tr>
+    <div class="col-sm-6 col-md-3">
+        <div class="thumbnail">
+            <img data-src="holder.js/100%x180/sky/text:{{album.name}}">
+            <div class="caption text-center">
+                    <a href="{% url 'albumitem' album_id=album.guid %}" class="btn btn-primary" role="button">Edit</a>
+                    <form action="{% url 'neworder' album_id=album.guid %}" method="post">{% csrf_token %}
+                        <button type="submit" class="btn btn-success">Order</button>
+                    </form>
+                    <form action="{% url 'albumitemdelete' album_id=album.guid %}" method="post">{% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+            </div>
+        </div>
+    </div>
     {% endfor %}
-</table>
-<form action="/albums/" method="post">{% csrf_token %}
-    <button type="submit" class="btn btn-primary">New album</button>
-</form>
+
+    <div class="col-sm-6 col-md-3">
+        <div class="thumbnail">
+            <img data-src="holder.js/100%x180/social/text:New album">
+            <div class="caption text-center">
+                <form action="{% url 'albumlist' %}" method="post">{% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Create a new album</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

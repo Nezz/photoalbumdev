@@ -31,7 +31,7 @@ class album_tests(TestCase):
                 Photo.objects.create(slide=slide2)
 
     """
-     /<Album ID>/
+     /albums/<Album ID>/
 	    * GET:
 		    * Owner login: Album editor
 		    * No login: Album viewer
@@ -110,7 +110,7 @@ class album_tests(TestCase):
         self.assertEquals(response.status_code, 403, "Testing request status code")
 
     """
-     /<Album ID>/delete
+     /albums/<Album ID>/delete
 	    * GET:
 		    * Owner login: Are you sure you want to delete?
 		    * No login: Login page 
@@ -151,7 +151,7 @@ class album_tests(TestCase):
         self.assertEquals(response.status_code, 403, "Testing request status code")
 
     """
-     /<Album ID>/modify
+     /albums/<Album ID>/modify
 	    * GET:
 		    * Owner login: Edit album name
 		    * No login: Login page
@@ -194,7 +194,7 @@ class album_tests(TestCase):
         self.assertEquals(response.status_code, 403, "Testing request status code")
 
     """
-     /<Album ID>/<Slide ID>/delete
+     /albums/<Album ID>/<Slide ID>/delete
 	    * GET:
 		    * Owner login: Are you sure you want to delete?
 		    * No login: Login page 
@@ -242,7 +242,7 @@ class album_tests(TestCase):
         self.assertEquals(response.status_code, 403, "Testing request status code")
 
     """
-     /<Album ID>/<Slide ID>/modify
+     /albums/<Album ID>/<Slide ID>/modify
 	    * GET:
 		    * Owner login: Template editor
 		    * No login: Login page
@@ -290,7 +290,7 @@ class album_tests(TestCase):
         self.assertEquals(response.status_code, 403, "Testing request status code")
 
     """
-     /<Album ID>/<Slide ID>/<Photo ID>
+     /albums/<Album ID>/<Slide ID>/<Photo ID>
 	    * GET: Url of photo
 	    * POST: N/A
     """
@@ -302,7 +302,7 @@ class album_tests(TestCase):
         self.assertEquals(response.status_code, 404, "Testing request status code")
 
     """
-     /<Album ID>/<Slide ID>/<Photo ID>/modify
+     /albums/<Album ID>/<Slide ID>/<Photo ID>/modify
 	    * GET:
 		    * Owner login: URL editor (and future flickr stuff)
 		    * No login: Login page 

@@ -1,6 +1,7 @@
-{% extends "base.html" %}
+{% extends "base_panel.html" %}
 {% block title %}Album {{album.name}}{% endblock %}
-{% block content %}
+{% block panelTitle %}{{album.name}}{% endblock %}
+{% block contentPanel %}
 <form class="form-inline" role="form" action="/albums/{{album.guid}}/modify" method="post">{% csrf_token %}
     <div class="form-group">
         <input type="text" class="form-control" placeholder="New name" id="name" name="name" required/>

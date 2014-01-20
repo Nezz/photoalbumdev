@@ -7,7 +7,32 @@ from photoalbum.renderers.album_renderers import *
 from photoalbum.models import Album, Slide, Photo
 
 """
- /<Album ID>/
+ /albums/
+	* GET:
+		* Logged in: List of albums
+		* No login: Login
+	* POST:
+		* New album (Owner only)
+"""
+def albumlistHandler(request):
+    return rest_helper(albumlistGet, albumlistPost, request)
+
+def albumlistGet(request):
+    if request.user.is_authenticated():
+        return album_list_view(request)
+    else:
+        return HttpResponseRedirect('/login/')
+
+def albumlistPost(request):
+    if request.user.is_authenticated():
+        guid = ''.join(random.choice(string.ascii_lowercase + string.digits) for x in range(8))
+        newAlbum = Album.objects.create(name="My album", guid=guid, owner=request.user)
+        return albumitemPost(request, newAlbum.guid)
+    else:
+        return HttpResponseForbidden();
+
+"""
+ /albums/<Album ID>/
 	* GET:
 		* Owner login: Album editor
 		* No login: Album viewer
@@ -31,7 +56,7 @@ def albumitemPost(request, album_id):
         return HttpResponseForbidden();
 
 """
- /<Album ID>/delete
+ /albums/<Album ID>/delete
 	* GET:
 		* Owner login: Are you sure you want to delete?
 		* No login: Login page 
@@ -58,7 +83,7 @@ def albumdeletePost(request, album_id):
         return HttpResponseForbidden()
 
 """
- /<Album ID>/modify
+ /albums/<Album ID>/modify
 	* GET:
 		* Owner login: Edit album name
 		* No login: Login page
@@ -89,7 +114,7 @@ def albummodifyPost(request, album_id):
         return HttpResponseBadRequest()
 
 """
- /<Album ID>/<Slide ID>
+ /albums/<Album ID>/<Slide ID>
 	* GET:
 		* Owner login: Album editor at specific slide
 		* No login: Album viewer at specific slide
@@ -102,7 +127,7 @@ def slideitemGet(request, album_id, slide_id):
     return album_view(request, album_id, slide_id)
 
 """
- /<Album ID>/<Slide ID>/delete
+ /albums/<Album ID>/<Slide ID>/delete
 	* GET:
 		* Owner login: Are you sure you want to delete?
 		* No login: Login page 
@@ -133,7 +158,7 @@ def slidedeletePost(request, album_id, slide_id):
         return HttpResponseForbidden()
 
 """
- /<Album ID>/<Slide ID>/modify
+ /albums/<Album ID>/<Slide ID>/modify
 	* GET:
 		* Owner login: Template editor
 		* No login: Login page
@@ -175,7 +200,7 @@ def slidemodifyPost(request, album_id, slide_id):
         return HttpResponseBadRequest()
 
 """
- /<Album ID>/<Slide ID>/<Photo ID>
+ /albums/<Album ID>/<Slide ID>/<Photo ID>
 	* GET: Url of photo
 	* POST: N/A
 """
@@ -194,7 +219,7 @@ def slidephotoGet(request, album_id, slide_id, photo_id):
     return HttpResponseRedirect(photo.link)
 
 """
- /<Album ID>/<Slide ID>/<Photo ID>/modify
+ /albums/<Album ID>/<Slide ID>/<Photo ID>/modify
 	* GET:
 		* Owner login: URL editor (and future flickr stuff)
 		* No login: Login page 
