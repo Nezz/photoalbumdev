@@ -48,8 +48,34 @@
     </form>
     {% endif %}
 {% endif %}
+
+<div class="text-center">
+    <ul class="pagination">
+        <li class="{% if not prev %}disabled{% endif %}"><a href="{% if prev %}{% url 'slideitem' album_id=album.guid slide_id=prev %}{% else %}#{% endif %}">&laquo;</a></li>
+
+        {% ifnotequal paginators.0 1 %}
+        <li><a href="{% url 'slideitem' album_id=album.guid slide_id=1 %}">1</a></li>
+        {% ifnotequal paginators.0|add:"-1" 1 %}
+        <li class="disabled"><a href="#">...</a></li>
+        {% endifnotequal %}
+        {% endifnotequal %}
+
+        {% for paginator in paginators %}
+        <li class="{% ifequal paginator curr %}active{%endifequal%}"><a href="{% url 'slideitem' album_id=album.guid slide_id=paginator %}">{{paginator}}</a></li>
+        {% endfor %}
+
+        {% ifnotequal paginators|last max %}
+        {% ifnotequal paginators|last|add:"1" max %}
+        <li class="disabled"><a href="#">...</a></li>
+        {% endifnotequal %}
+        <li><a href="{% url 'slideitem' album_id=album.guid slide_id=max %}">{{max}}</a></li>
+        {% endifnotequal %}
+
+        <li class="{% if not next %}disabled{% endif %}"><a href="{% if next %}{% url 'slideitem' album_id=album.guid slide_id=next %}{% else %}#{% endif %}">&raquo;</a></li>
+    </ul>
+</div>
+
 {% if prev %}
-<a id="prevbutton" href="/albums/{{album.guid}}/{{prev}}">Previous</a>
     {% if editable %}
     <form action="/albums/{{album.guid}}/{{curr}}/modify" method="post">{% csrf_token %}
         <input type='hidden' name='order' value='{{prev}}' />
@@ -59,7 +85,6 @@
     {% endif %}
 {% endif %}
 {% if next %}
-<a id="nextbutton" href="/albums/{{album.guid}}/{{next}}">Next</a>
     {% if editable %}
     <form action="/albums/{{album.guid}}/{{curr}}/modify" method="post">{% csrf_token %}
         <input type='hidden' name='order' value='{{next}}' />
@@ -68,9 +93,4 @@
     </form>
     {% endif %}
 {% endif %}
-<a href="/albums/">Album list</a>
-<form class="form-inline" role="form" action="/albums/{{album.guid}}/order" method="post">{% csrf_token %}  
-    <input type='hidden' name='album_id' value='{{album.guid}}' />            
-    <button type="submit" class="btn btn-default">Create an order</button>
-</form>
 {% endblock %}

@@ -21,6 +21,8 @@ def album_view(request, album_id, slide_id=1):
     slide = get_object_or_404(Slide, pk=album.get_slide_order()[slide_id - 1])
 
     curr = slide_id
+    maxSlide = len(album.get_slide_order())
+    paginators = range(max(1, curr - 3), min(maxSlide, curr + 3) + 1)
 
     if (slide_id > 1):
         prev = slide_id - 1
@@ -35,7 +37,7 @@ def album_view(request, album_id, slide_id=1):
     photos = Photo.objects.filter(slide=slide)
     editable = album.owner == request.user
 
-    c = {"album": album, "curr" : curr, "next" : next, "prev" : prev, "photos" : photos, "editable" : editable}
+    c = {"album": album, "curr" : curr, "next" : next, "prev" : prev, "max" : maxSlide, "paginators" : paginators, "photos" : photos, "editable" : editable}
     c.update(csrf(request))
 
     return render_to_response("album.html", RequestContext(request, c))
