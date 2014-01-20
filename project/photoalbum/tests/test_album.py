@@ -31,7 +31,37 @@ class album_tests(TestCase):
                 Photo.objects.create(slide=slide2)
 
     """
-     /<Album ID>/
+     /albums/
+	    * GET:
+		    * Logged in: List of albums
+		    * No login: Login
+	    * POST:
+		    * New album (Owner only)
+    """
+
+    def test_albumsGetNoLogin(self):
+        response = self.client.get('/albums/', follow=True)
+        self.assertEquals(response.status_code, 200, "Testing request status code")
+        self.assertTemplateUsed(response, "login.html", "Testing that the right template was rendered")
+
+    def test_albumsGetLogin(self):
+        self.assertTrue(self.client.login(username='admin', password='admin'))
+        response = self.client.get('/albums/')
+        self.assertEquals(response.status_code, 200, "Testing request status code")
+        self.assertTemplateUsed(response, "album_list.html", "Testing that the right template was rendered")
+
+    def test_albumsPostNoLogin(self):
+        response = self.client.post('/albums/', follow=True)
+        self.assertEquals(response.status_code, 403, "Testing request status code")
+
+    def test_albumsPostLogin(self):
+        self.assertTrue(self.client.login(username='admin', password='admin'))
+        response = self.client.post('/albums/', follow=True)
+        self.assertEquals(response.status_code, 200, "Testing request status code")
+        self.assertTemplateUsed(response, "album.html", "Testing that the right template was rendered")
+
+    """
+     /albums/<Album ID>/
 	    * GET:
 		    * Owner login: Album editor
 		    * No login: Album viewer
@@ -61,22 +91,22 @@ class album_tests(TestCase):
         response = self.client.get('/albums/albumtwo/1', follow=True)
         self.assertEquals(response.status_code, 200, "Testing request status code")
         self.assertTemplateUsed(response, "album.html", "Testing that the right template was rendered")
-        self.assertNotContains(response, 'id="prevbutton"')
-        self.assertContains(response, 'id="nextbutton"')
+        self.assertContains(response, '<li class="disabled"><a href="#">&laquo;</a></li>')
+        self.assertNotContains(response, '<li class="disabled"><a href="#">&raquo;</a></li>"')
 
     def test_albumGetMidbuttons(self):
         response = self.client.get('/albums/albumtwo/2', follow=True)
         self.assertEquals(response.status_code, 200, "Testing request status code")
         self.assertTemplateUsed(response, "album.html", "Testing that the right template was rendered")
-        self.assertContains(response, 'id="prevbutton"')
-        self.assertContains(response, 'id="nextbutton"')
+        self.assertNotContains(response, '<li class="disabled"><a href="#">&laquo;</a></li>')
+        self.assertNotContains(response, '<li class="disabled"><a href="#">&raquo;</a></li>')
 
     def test_albumGetLastbuttons(self):
         response = self.client.get('/albums/albumtwo/3', follow=True)
         self.assertEquals(response.status_code, 200, "Testing request status code")
         self.assertTemplateUsed(response, "album.html", "Testing that the right template was rendered")
-        self.assertContains(response, 'id="prevbutton"')
-        self.assertNotContains(response, 'id="nextbutton"')
+        self.assertNotContains(response, '<li class="disabled"><a href="#">&laquo;</a></li>')
+        self.assertContains(response, '<li class="disabled"><a href="#">&raquo;</a></li>')
 
     def test_albumGetDeletebutton(self):
         response = self.client.get('/albums/albumone/1', follow=True)
@@ -110,7 +140,7 @@ class album_tests(TestCase):
         self.assertEquals(response.status_code, 403, "Testing request status code")
 
     """
-     /<Album ID>/delete
+     /albums/<Album ID>/delete
 	    * GET:
 		    * Owner login: Are you sure you want to delete?
 		    * No login: Login page 
@@ -151,7 +181,7 @@ class album_tests(TestCase):
         self.assertEquals(response.status_code, 403, "Testing request status code")
 
     """
-     /<Album ID>/modify
+     /albums/<Album ID>/modify
 	    * GET:
 		    * Owner login: Edit album name
 		    * No login: Login page
@@ -194,7 +224,7 @@ class album_tests(TestCase):
         self.assertEquals(response.status_code, 403, "Testing request status code")
 
     """
-     /<Album ID>/<Slide ID>/delete
+     /albums/<Album ID>/<Slide ID>/delete
 	    * GET:
 		    * Owner login: Are you sure you want to delete?
 		    * No login: Login page 
@@ -242,7 +272,7 @@ class album_tests(TestCase):
         self.assertEquals(response.status_code, 403, "Testing request status code")
 
     """
-     /<Album ID>/<Slide ID>/modify
+     /albums/<Album ID>/<Slide ID>/modify
 	    * GET:
 		    * Owner login: Template editor
 		    * No login: Login page
@@ -290,7 +320,7 @@ class album_tests(TestCase):
         self.assertEquals(response.status_code, 403, "Testing request status code")
 
     """
-     /<Album ID>/<Slide ID>/<Photo ID>
+     /albums/<Album ID>/<Slide ID>/<Photo ID>
 	    * GET: Url of photo
 	    * POST: N/A
     """
@@ -302,7 +332,7 @@ class album_tests(TestCase):
         self.assertEquals(response.status_code, 404, "Testing request status code")
 
     """
-     /<Album ID>/<Slide ID>/<Photo ID>/modify
+     /albums/<Album ID>/<Slide ID>/<Photo ID>/modify
 	    * GET:
 		    * Owner login: URL editor (and future flickr stuff)
 		    * No login: Login page 

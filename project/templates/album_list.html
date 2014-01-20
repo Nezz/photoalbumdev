@@ -1,41 +1,39 @@
-<!DOCTYPE html>
-<html>
-	{% load staticfiles %}
-	<head>
-	  	<title>Albums you have created</title>
-	  	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
-	  	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css" rel="stylesheet">
-	</head>
-    <body>
-        <script src="https://code.jquery.com/jquery.js"></script>
-        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-        <div class="container">
-            <h1>Albums</h1>
-            <table style="text-align: center;" class="table table-hover">
-                <tr>
-                    <th style="text-align: center;">Album name</th>
-                    <th style="text-align: center;">Album id</th>
-                </tr>
-                {% for album in albums %}
-                <tr>
-                    <td>
-                        <a href="/albums/{{album.guid}}/">{{album.name}}</a>
-                    </td>
-                    <td>
-                        {{album.guid}}
-                    </td>
-                    <td>
-                        <form action="/albums/{{album.guid}}/delete" method="post">{% csrf_token %}
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
-            <form action="/albums/" method="post">{% csrf_token %}
-                <button type="submit" class="btn btn-primary">New album</button>
-            </form>
-            <a href="/logout/">Logout</a>
+{% extends "base_panel.html" %}
+{% block title %}Your albums{% endblock %}
+{% block panelTitle %}Albums{% endblock %}
+{% block scripts %}
+<script>
+function submitForm(id) {
+    $('#' + id).submit();
+}
+</script>
+{% endblock %}
+{% block contentPanel %}
+
+<div class="row">
+    {% for album in albums %}
+    <div class="col-sm-6 col-md-3">
+        <div class="thumbnail">
+            <a href="{% url 'albumitem' album_id=album.guid %}"><img data-src="holder.js/100%x180/sky/text:{{album.name}}"></a>
+            <div class="caption text-center">
+                <button type="submit" class="btn btn-success" onclick="submitForm('order{{album.guid}}')"><span class="glyphicon glyphicon-shopping-cart icons-padding"></span> Order</button>
+                <button type="submit" class="btn btn-danger" onclick="submitForm('delete{{album.guid}}')"><span class="glyphicon glyphicon-remove icons-padding"></span> Delete</button>
+                <form action="{% url 'neworder' album_id=album.guid %}" method="post" id="order{{album.guid}}">{% csrf_token %}</form>
+                <form action="{% url 'albumitemdelete' album_id=album.guid %}" method="post" id="delete{{album.guid}}">{% csrf_token %}</form>
+            </div>
         </div>
-    </body>
-</html>
+    </div>
+    {% endfor %}
+
+    <div class="col-sm-6 col-md-3">
+        <div class="thumbnail">
+            <img data-src="holder.js/100%x180/social/text:New album">
+            <div class="caption text-center">
+                <form action="{% url 'albumlist' %}" method="post">{% csrf_token %}
+                    <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-plus icons-padding"></span> Create a new album</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

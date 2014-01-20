@@ -31,23 +31,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="manage.py" />
-    <Compile Include="photoalbum\handlers\album_handlers.py" />
-    <Compile Include="photoalbum\handlers\order_handlers.py" />
-    <Compile Include="photoalbum\handlers\user_handlers.py" />
-    <Compile Include="photoalbum\handlers\__init__.py" />
-    <Compile Include="photoalbum\renderers\album_renderers.py" />
-    <Compile Include="photoalbum\renderers\order_renderers.py" />
-    <Compile Include="photoalbum\renderers\user_renderers.py" />
-    <Compile Include="photoalbum\renderers\__init__.py" />
-    <Compile Include="photoalbum\tests\test_album.py" />
-    <Compile Include="photoalbum\tests\test_order.py" />
-    <Compile Include="photoalbum\tests\test_user.py" />
-    <Compile Include="photoalbum\tests\__init__.py" />
     <Compile Include="project\*.py" />
     <Compile Include="photoalbum\*.py" />
     <Compile Include="photoalbum\handlers\*.py" />
     <Compile Include="photoalbum\renderers\*.py" />
     <Compile Include="photoalbum\tests\*.py" />
+    <Compile Include="photoalbum\templatetags\*.py" />
     <Compile Include="templates\*.html" />
   </ItemGroup>
   <ItemGroup>

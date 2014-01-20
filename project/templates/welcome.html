@@ -1,8 +1,12 @@
-<html>
-<head><title></title></head>
-
-<body>
-    <a href="/login/">Login</a> 
-    <a href="/register/">Register</a> 
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Photo Album{% endblock %}
+{% block content %}
+<div class="jumbotron">
+    <h1>Hello visitor!</h1>
+    <p>Welcome to this awesome photo album service.</p>
+    <p>
+        <a class="btn btn-success btn-lg" role="button" href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in icons-padding"></span> Login</a>
+        <a class="btn btn-primary btn-lg" role="button" href="{% url 'register' %}"><span class="glyphicon glyphicon-registration-mark icons-padding"></span> Register</a>
+    </p>
+</div>
+{% endblock %}

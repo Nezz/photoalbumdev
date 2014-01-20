@@ -4,38 +4,25 @@ from django.contrib.auth.models import User
 from django.template import Context
 from photoalbum.rest import rest_helper
 from photoalbum.renderers.user_renderers import *
-from photoalbum.renderers.album_renderers import album_list_view
-from photoalbum.handlers.album_handlers import albumitemPost
 from photoalbum.models import Album
 from django import forms
 from django.core.validators import validate_email
-import string
-import random
 
 """
  /
 	* GET:
 		* Logged in: List of albums
 		* No login: Welcome page
-	* POST:
-		* New album (Owner only)
+	* POST: N/A
 """
 def indexHandler(request):
-    return rest_helper(indexGet, indexPost, request)
+    return rest_helper(indexGet, None, request)
 
 def indexGet(request):
     if request.user.is_authenticated():
-        return album_list_view(request);
+        return HttpResponseRedirect('/albums/')
     else:
         return welcome_view(request)
-
-def indexPost(request):
-    if request.user.is_authenticated():
-        guid = ''.join(random.choice(string.ascii_lowercase + string.digits) for x in range(8))
-        newAlbum = Album.objects.create(name="New album", guid=guid, owner=request.user)
-        return albumitemPost(request, newAlbum.guid)
-    else:
-        return HttpResponseForbidden();
 
 """
  /login/

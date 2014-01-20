@@ -6,7 +6,7 @@ from photoalbum.rest import rest_helper
 from photoalbum.renderers.order_renderers import *
 
 """
- /<Album ID>/order
+ /albums/<Album ID>/order
 	* GET: N/A
 	* POST: New order of the album
 """
