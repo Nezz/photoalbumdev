@@ -3,17 +3,18 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.template import Context
 from photoalbum.rest import rest_helper
+from photoalbum.renderers.order_renderers import *
 
 """
  /<Album ID>/order
-	* GET: New order of the album
-	* POST: N/A
+	* GET: N/A
+	* POST: New order of the album
 """
 def neworderHandler(request, album_id):
-    return rest_helper(neworderGet, None, request, album_id)
+    return rest_helper(None, neworderPost, request, album_id)
 
-def neworderGet(request, album_id):
-    raise Http404(); # TODO
+def neworderPost(request, album_id):
+    return order_create_view(request, album_id)
 
 """
  /orders/
@@ -26,7 +27,7 @@ def orderlistHandler(request):
     return rest_helper(orderlistGet, None, request)
 
 def orderlistGet(request):
-    raise Http404(); # TODO
+    return order_list_view(request)
 
 """
  /orders/<Order ID>
