@@ -92,6 +92,9 @@
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
     </Interpreter>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="templates\order_list.html" />
+  </ItemGroup>
   <Import Project="$(VSToolsPath)\Python Tools\Microsoft.PythonTools.Django.targets" />
   <ProjectExtensions>
     <VisualStudio>
