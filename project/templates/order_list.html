@@ -2,20 +2,20 @@
 {% block title %}Your orders{% endblock %}
 {% block panelTitle %}Orders{% endblock %}
 {% block contentPanel %}
-<table style="text-align: center;" class="table table-hover">
-    <tr>
-        <th style="text-align: center;">Order album name</th>
-        <th style="text-align: center;">Time placed</th>
-    </tr>
+
+<div class="row">
     {% for order in orders %}
-    <tr>
-        <td>
-            {{order.album.name}}
-        </td>
-        <td>
-            {{order.time_placed}}
-        </td>                 
-    </tr>
+    <div class="col-sm-6 col-md-3">
+        <div class="thumbnail">
+            <img data-src="holder.js/100%x180/sky/text:{{order.album.name}}">
+            <div class="caption text-center">
+                {{order.time_placed}}
+                <form action="{% url 'orderitemdelete' order_id=order.pk %}" method="post">{% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
     {% endfor %}
-</table>
+</div>
 {% endblock %}
