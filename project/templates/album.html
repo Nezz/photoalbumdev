@@ -31,7 +31,7 @@
     {% for photo in photos %}
     <div class="col-sm-6 col-md-3">
         <div class="thumbnail">
-            <img {% if photo.link %}src="{{photo.link}}"{% else %}data-src="holder.js/100%x180/social/text:No image"{% endif %}>
+            {% if editable %}<a href="#" onclick="modifyLink('{{photo.pk}}')">{% endif %}<img {% if photo.link %}src="{{photo.link}}"{% else %}data-src="holder.js/100%x180/social/text:No image"{% endif %}>{% if editable %}</a>{% endif %}
             <div class="caption text-center">
                 <p>{{photo.description}}</p>
                 {% if editable %}
