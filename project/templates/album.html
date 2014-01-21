@@ -2,29 +2,26 @@
 {% block title %}Album {{album.name}}{% endblock %}
 {% block panelTitle %}{{album.name}}{% endblock %}
 {% block scripts %}
-<script>
-function submitForm(id) {
-    $('#' + id).submit();
-}
-</script>
 {% endblock %}
 {% block contentPanel %}
 
 {% if editable %}
-<form class="form-inline" role="form" action="/albums/{{album.guid}}/modify" method="post">{% csrf_token %}
-    <div class="form-group">
-        <input type="text" class="form-control" placeholder="New name" id="name" name="name" required/>
-    </div>
-    <button type="submit" class="btn btn-default">Change</button>
+<form role="form" action="{% url 'albumitemmodify' album_id=album.guid %}" method="post" id="modifyalbum">{% csrf_token %}
+    <input type="hidden" name="name" id="albumname"/>
 </form>
 
 <div class="float-right text-right">
-    <button class="btn btn-default" onclick="submitForm('newslide')"><span class="glyphicon glyphicon-plus icons-padding"></span> New slide</button>
-    {% if prev or next %}
-    <button class="btn btn-danger" onclick="submitForm('deletebutton')"><span class="glyphicon glyphicon-remove icons-padding"></span> Delete slide</button>
-    {% endif %}
+    <button class="btn btn-primary" onclick="modifyAlbum()"><span class="glyphicon glyphicon-edit icons-padding"></span> Change album name</button>
+    <div class="btn-group">
+        <button class="btn btn-default" onclick="submitForm('newslide')"><span class="glyphicon glyphicon-plus icons-padding"></span> New slide</button>
+        {% if prev or next %}
+        <button class="btn btn-danger" onclick="confirmForm('Delete slide', 'Are you sure?', 'deletebutton')"><span class="glyphicon glyphicon-remove icons-padding"></span> Delete slide</button>
+        {% endif %}
+    </div>
 </div>
-<form action="{% url 'albumitem' album_id=album.guid %}" method="post" id="newslide">{% csrf_token %}</form>
+<form action="{% url 'albumitem' album_id=album.guid %}" method="post" id="newslide">{% csrf_token %}
+    <input type="hidden" name="after" value="{{curr}}">
+</form>
 {% if prev or next %}
 <form action="{% url 'slideitemdelete' album_id=album.guid slide_id=curr %}" method="post" id="deletebutton">{% csrf_token %}</form>
 {% endif %}
@@ -36,14 +33,18 @@ function submitForm(id) {
         <div class="thumbnail">
             <img {% if photo.link %}src="{{photo.link}}"{% else %}data-src="holder.js/100%x180/social/text:No image"{% endif %}>
             <div class="caption text-center">
+                <p>{{photo.description}}</p>
                 {% if editable %}
-                <form action="{% url 'slideitemphotomodify' album_id=album.guid slide_id=curr photo_id=photo.pk %}" method="post" id="modify{{photo.pk}}">{% csrf_token %}
-                    <input type="text" class="form-control" {% if photo.description %}value="{{photo.description}}"{% else %}placeholder="Description"{% endif %} name="description">
-                    <input type="text" class="form-control" {% if photo.link %}value="{{photo.link}}"{% else %}placeholder="Link"{% endif %} name="link">
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="modifyDescription('{{photo.pk}}')"><span class="glyphicon glyphicon-edit icons-padding"></span> Description</button>
+                    <button class="btn btn-primary" onclick="modifyLink('{{photo.pk}}')"><span class="glyphicon glyphicon-edit icons-padding"></span> Link</button>
+                </div>
+                <form action="{% url 'slideitemphotomodify' album_id=album.guid slide_id=curr photo_id=photo.pk %}" method="post" id="modifydesc{{photo.pk}}">{% csrf_token %}
+                    <input type="hidden" id="photodesc{{photo.pk}}" name="description">
                 </form>
-                <button class="btn btn-primary" onclick="submitForm('modify{{photo.pk}}')">Change</button>
-                {% else %}
-                {{photo.description}}
+                <form action="{% url 'slideitemphotomodify' album_id=album.guid slide_id=curr photo_id=photo.pk %}" method="post" id="modifylink{{photo.pk}}">{% csrf_token %}
+                    <input type="hidden" id="photolink{{photo.pk}}" name="link">
+                </form>
                 {% endif %}
             </div>
         </div>
@@ -65,10 +66,10 @@ function submitForm(id) {
         {% for paginator in paginators %}
         {% ifequal paginator curr %}
         <div class="btn-group">
-            <button type="button" class="btn btn-default active dropdown-toggle" data-toggle="dropdown">{{paginator}} <span class="caret"></span></button>
+            <button type="button" class="btn btn-default active dropdown-toggle" data-toggle="dropdown">{{paginator}} <span class="glyphicon glyphicon-refresh icons-padding"></span></button>
             <ul class="dropdown-menu">
-                <li class="{% if not prev %}disabled{% endif %}"><a href="#" {% if prev %}onclick="submitForm('moveleft')"{% endif %}><span class="glyphicon glyphicon-arrow-left icons-padding"></span> Move left</a></li>
                 <li class="{% if not next %}disabled{% endif %}"><a href="#" {% if next %}onclick="submitForm('moveright')"{% endif %}><span class="glyphicon glyphicon-arrow-right icons-padding"></span> Move right</a></li>
+                <li class="{% if not prev %}disabled{% endif %}"><a href="#" {% if prev %}onclick="submitForm('moveleft')"{% endif %}><span class="glyphicon glyphicon-arrow-left icons-padding"></span> Move left</a></li>
             </ul>
         </div>
         {% else %}
