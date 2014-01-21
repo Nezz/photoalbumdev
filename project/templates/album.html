@@ -51,7 +51,7 @@
 
 <div class="text-center">
     <ul class="pagination">
-        <li class="{% if not prev %}disabled{% endif %}"><a href="{% if prev %}{% url 'slideitem' album_id=album.guid slide_id=prev %}{% else %}#{% endif %}">&laquo;</a></li>
+        <li class="{% if not prev %}disabled{% endif %}"><a href="{% if prev %}{% url 'slideitem' album_id=album.guid slide_id=prev %}{% else %}#{% endif %}"><span class="glyphicon glyphicon-chevron-left icons-padding"></span></a></li>
 
         {% ifnotequal paginators.0 1 %}
         <li><a href="{% url 'slideitem' album_id=album.guid slide_id=1 %}">1</a></li>
@@ -71,7 +71,7 @@
         <li><a href="{% url 'slideitem' album_id=album.guid slide_id=max %}">{{max}}</a></li>
         {% endifnotequal %}
 
-        <li class="{% if not next %}disabled{% endif %}"><a href="{% if next %}{% url 'slideitem' album_id=album.guid slide_id=next %}{% else %}#{% endif %}">&raquo;</a></li>
+        <li class="{% if not next %}disabled{% endif %}"><a href="{% if next %}{% url 'slideitem' album_id=album.guid slide_id=next %}{% else %}#{% endif %}"><span class="glyphicon glyphicon-chevron-right icons-padding"></span></a></li>
     </ul>
 </div>
 
