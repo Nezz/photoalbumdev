@@ -2,7 +2,7 @@ from django.http import HttpResponse, Http404, HttpResponseForbidden, HttpRespon
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.template import Context
-from photoalbum.rest import rest_helper
+from photoalbum.rest import rest_helper, get_or_none
 from photoalbum.renderers.order_renderers import *
 
 """
@@ -46,15 +46,19 @@ def orderitemGet(request, order_id):
 """
  /orders/<Order ID>/delete
 	* GET:
-		* Owner login: Are you sure you want to delete?
-		* No login: Login page 
+		None
 	* POST: Delete order (Owner only)
 """
 def orderitemdeleteHandler(request, order_id):
-    return rest_helper(orderlistGet, None, request, order_id)
-
-def orderitemdeleteGet(request, order_id):
-    raise Http404(); # TODO
+    return rest_helper(None, orderitemdeletePost, request, order_id)
 
 def orderitemdeletePost(request, order_id):
-    raise Http404(); # TODO
+    if request.user.is_authenticated:
+        order = get_or_none(Order, pk=order_id)
+        if order != None:
+            order.delete()
+            return order_list_view(request)
+        else:
+            raise Http404()
+    else:
+        return HttpResponseRedirect('/login/')

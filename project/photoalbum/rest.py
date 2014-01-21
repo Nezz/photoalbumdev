@@ -15,3 +15,9 @@ def rest_helper(getResponse, postResponse, request, *extraArgs):
                 return postResponse(request)
         else:
             return HttpResponseNotAllowed(['GET'])
+
+def get_or_none(model, **kwargs):
+    try:
+        return model.objects.get(**kwargs)
+    except model.DoesNotExist:
+        return None
