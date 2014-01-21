@@ -91,22 +91,22 @@ class album_tests(TestCase):
         response = self.client.get('/albums/albumtwo/1', follow=True)
         self.assertEquals(response.status_code, 200, "Testing request status code")
         self.assertTemplateUsed(response, "album.html", "Testing that the right template was rendered")
-        self.assertContains(response, '<li class="disabled"><a href="#">&laquo;</a></li>')
-        self.assertNotContains(response, '<li class="disabled"><a href="#">&raquo;</a></li>"')
+        self.assertNotContains(response, 'moveleft')
+        self.assertContains(response, 'moveright')
 
     def test_albumGetMidbuttons(self):
         response = self.client.get('/albums/albumtwo/2', follow=True)
         self.assertEquals(response.status_code, 200, "Testing request status code")
         self.assertTemplateUsed(response, "album.html", "Testing that the right template was rendered")
-        self.assertNotContains(response, '<li class="disabled"><a href="#">&laquo;</a></li>')
-        self.assertNotContains(response, '<li class="disabled"><a href="#">&raquo;</a></li>')
+        self.assertContains(response, 'moveleft')
+        self.assertContains(response, 'moveright')
 
     def test_albumGetLastbuttons(self):
         response = self.client.get('/albums/albumtwo/3', follow=True)
         self.assertEquals(response.status_code, 200, "Testing request status code")
         self.assertTemplateUsed(response, "album.html", "Testing that the right template was rendered")
-        self.assertNotContains(response, '<li class="disabled"><a href="#">&laquo;</a></li>')
-        self.assertContains(response, '<li class="disabled"><a href="#">&raquo;</a></li>')
+        self.assertContains(response, 'moveleft')
+        self.assertNotContains(response, 'moveright')
 
     def test_albumGetDeletebutton(self):
         response = self.client.get('/albums/albumone/1', follow=True)

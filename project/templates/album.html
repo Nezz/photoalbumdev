@@ -1,96 +1,105 @@
 {% extends "base_panel.html" %}
 {% block title %}Album {{album.name}}{% endblock %}
 {% block panelTitle %}{{album.name}}{% endblock %}
+{% block scripts %}
+<script>
+function submitForm(id) {
+    $('#' + id).submit();
+}
+</script>
+{% endblock %}
 {% block contentPanel %}
+
+{% if editable %}
 <form class="form-inline" role="form" action="/albums/{{album.guid}}/modify" method="post">{% csrf_token %}
     <div class="form-group">
         <input type="text" class="form-control" placeholder="New name" id="name" name="name" required/>
     </div>
     <button type="submit" class="btn btn-default">Change</button>
 </form>
-            
-<table style="text-align: center;" class="table table-hover">
-    <tr>
-        <th style="text-align: center;">Photo</th>
-        <th style="text-align: center;">Id</th>
-    </tr>
-    {% for photo in photos %}
-        <tr>
-            <td>
-                <a href="{{photo.link}}">{{photo.description}}</a>
-            </td>
-            <td>
-                {{photo.pk}}
-            </td>
-            {% if editable %}
-            <td>
-                <form class="form-inline" role="form" action="/albums/{{album.guid}}/{{curr}}/{{photo.pk}}/modify" method="post">{% csrf_token %}
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Description" name="description">                                                                     
-                    </div>
-                    <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Link" name="link">
-                    </div>
-                    <button type="submit" class="btn btn-default">Modify</button>
-                </form>
-            </td>
-            {% endif %}
-        </tr>
-    {% endfor %}
-</table>
-{% if editable %}
-    <form action="/albums/{{album.guid}}/" method="post">{% csrf_token %}
-        <button id="newslide" type="submit" class="btn btn-default"><span class="glyphicon glyphicon-plus icons-padding"></span> New slide</button>
-    </form>
+
+<div class="float-right text-right">
+    <button class="btn btn-default" onclick="submitForm('newslide')"><span class="glyphicon glyphicon-plus icons-padding"></span> New slide</button>
     {% if prev or next %}
-    <form action="/albums/{{album.guid}}/{{curr}}/delete" method="post">{% csrf_token %}
-        <button id="deletebutton" type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-remove icons-padding"></span> Delete slide</button>
-    </form>
+    <button class="btn btn-danger" onclick="submitForm('deletebutton')"><span class="glyphicon glyphicon-remove icons-padding"></span> Delete slide</button>
     {% endif %}
+</div>
+<form action="{% url 'albumitem' album_id=album.guid %}" method="post" id="newslide">{% csrf_token %}</form>
+{% if prev or next %}
+<form action="{% url 'slideitemdelete' album_id=album.guid slide_id=curr %}" method="post" id="deletebutton">{% csrf_token %}</form>
 {% endif %}
+{% endif %}
+            
+<div class="row">
+    {% for photo in photos %}
+    <div class="col-sm-6 col-md-3">
+        <div class="thumbnail">
+            <img {% if photo.link %}src="{{photo.link}}"{% else %}data-src="holder.js/100%x180/social/text:No image"{% endif %}>
+            <div class="caption text-center">
+                {% if editable %}
+                <form action="{% url 'slideitemphotomodify' album_id=album.guid slide_id=curr photo_id=photo.pk %}" method="post" id="modify{{photo.pk}}">{% csrf_token %}
+                    <input type="text" class="form-control" {% if photo.description %}value="{{photo.description}}"{% else %}placeholder="Description"{% endif %} name="description">
+                    <input type="text" class="form-control" {% if photo.link %}value="{{photo.link}}"{% else %}placeholder="Link"{% endif %} name="link">
+                </form>
+                <button class="btn btn-primary" onclick="submitForm('modify{{photo.pk}}')">Change</button>
+                {% else %}
+                {{photo.description}}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 
 <div class="text-center">
-    <ul class="pagination">
-        <li class="{% if not prev %}disabled{% endif %}"><a href="{% if prev %}{% url 'slideitem' album_id=album.guid slide_id=prev %}{% else %}#{% endif %}"><span class="glyphicon glyphicon-chevron-left icons-padding"></span></a></li>
+    <div class="btn-group">
+        <a class="btn btn-default {% if not prev %}disabled{% endif %}" href="{% if prev %}{% url 'slideitem' album_id=album.guid slide_id=prev %}{% else %}#{% endif %}"><span class="glyphicon glyphicon-chevron-left icons-padding"></span></a>
 
         {% ifnotequal paginators.0 1 %}
-        <li><a href="{% url 'slideitem' album_id=album.guid slide_id=1 %}">1</a></li>
+        <a class="btn btn-default" href="{% url 'slideitem' album_id=album.guid slide_id=1 %}">1</a>
         {% ifnotequal paginators.0|add:"-1" 1 %}
-        <li class="disabled"><a href="#">...</a></li>
+        <button type="button" class="btn btn-default disabled">...</button>
         {% endifnotequal %}
         {% endifnotequal %}
 
         {% for paginator in paginators %}
-        <li class="{% ifequal paginator curr %}active{%endifequal%}"><a href="{% url 'slideitem' album_id=album.guid slide_id=paginator %}">{{paginator}}</a></li>
+        {% ifequal paginator curr %}
+        <div class="btn-group">
+            <button type="button" class="btn btn-default active dropdown-toggle" data-toggle="dropdown">{{paginator}} <span class="caret"></span></button>
+            <ul class="dropdown-menu">
+                <li class="{% if not prev %}disabled{% endif %}"><a href="#" {% if prev %}onclick="submitForm('moveleft')"{% endif %}><span class="glyphicon glyphicon-arrow-left icons-padding"></span> Move left</a></li>
+                <li class="{% if not next %}disabled{% endif %}"><a href="#" {% if next %}onclick="submitForm('moveright')"{% endif %}><span class="glyphicon glyphicon-arrow-right icons-padding"></span> Move right</a></li>
+            </ul>
+        </div>
+        {% else %}
+        <a class="btn btn-default" href="{% url 'slideitem' album_id=album.guid slide_id=paginator %}">{{paginator}}</a>
+        {% endifequal%}
+
         {% endfor %}
 
         {% ifnotequal paginators|last max %}
         {% ifnotequal paginators|last|add:"1" max %}
-        <li class="disabled"><a href="#">...</a></li>
+        <button type="button" class="btn btn-default disabled">...</button>
         {% endifnotequal %}
-        <li><a href="{% url 'slideitem' album_id=album.guid slide_id=max %}">{{max}}</a></li>
+        <a class="btn btn-default" href="{% url 'slideitem' album_id=album.guid slide_id=max %}">{{max}}</a>
         {% endifnotequal %}
 
-        <li class="{% if not next %}disabled{% endif %}"><a href="{% if next %}{% url 'slideitem' album_id=album.guid slide_id=next %}{% else %}#{% endif %}"><span class="glyphicon glyphicon-chevron-right icons-padding"></span></a></li>
-    </ul>
+        <a class="btn btn-default {% if not next %}disabled{% endif %}" href="{% if next %}{% url 'slideitem' album_id=album.guid slide_id=next %}{% else %}#{% endif %}"><span class="glyphicon glyphicon-chevron-right icons-padding"></span></a>
+    </div>
 </div>
 
-{% if prev %}
-    {% if editable %}
-    <form action="/albums/{{album.guid}}/{{curr}}/modify" method="post">{% csrf_token %}
+{% if editable %}
+    {% if prev %}
+    <form action="{% url 'slideitemmodify' album_id=album.guid slide_id=curr %}" method="post" id="moveleft">{% csrf_token %}
         <input type='hidden' name='order' value='{{prev}}' />
         <input type='hidden' name='template' value='1' />
-        <button id="deletebutton" type="submit" class="btn btn-default">Move prev</button>
     </form>
     {% endif %}
-{% endif %}
-{% if next %}
-    {% if editable %}
-    <form action="/albums/{{album.guid}}/{{curr}}/modify" method="post">{% csrf_token %}
+    <form action="{% url 'slideitemmodify' album_id=album.guid slide_id=curr %}" method="post" id="moveright">{% csrf_token %}
         <input type='hidden' name='order' value='{{next}}' />
         <input type='hidden' name='template' value='1' />
-        <button id="deletebutton" type="submit" class="btn btn-default">Move next</button>
     </form>
+    {% if next %}
     {% endif %}
 {% endif %}
 {% endblock %}
