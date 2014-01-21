@@ -53,7 +53,15 @@ def albumitemPost(request, album_id):
         for i in range(0,4):
             Photo.objects.create(slide=newSlide)
 
-        return HttpResponseRedirect('/albums/' + str(album_id) + '/' + str(len(album.get_slide_order())))
+        if 'after' in request.POST:
+            order = album.get_slide_order()
+            order.insert(int(request.POST['after']), order.pop(len(order) - 1))
+            album.set_slide_order(order)
+            newId = int(request.POST['after']) + 1
+        else:
+            newId = len(album.get_slide_order())
+
+        return HttpResponseRedirect('/albums/' + str(album_id) + '/' + str(newId))
     else:
         return HttpResponseForbidden();
 
@@ -179,23 +187,31 @@ def slidemodifyGet(request, album_id, slide_id):
         return HttpResponseForbidden()
 
 def slidemodifyPost(request, album_id, slide_id):
-    if 'order' in request.POST and request.POST['order'] and 'template' in request.POST and request.POST['template']:
+    hasOrder = 'order' in request.POST and request.POST['order'];
+    hasTemplate = 'template' in request.POST and request.POST['template']
+    if hasOrder or hasTemplate:
         album = get_object_or_404(Album, guid=album_id)
         if album.owner == request.user and len(album.get_slide_order()) > 1:
             if len(album.get_slide_order()) < int(slide_id):
                 raise Http404();
-            elif int(request.POST['order']) > len(album.get_slide_order()):
+            elif hasOrder and int(request.POST['order']) > len(album.get_slide_order()):
                 return HttpResponseBadRequest()
             else:
                 slide = get_object_or_404(Slide, pk=album.get_slide_order()[int(slide_id) - 1])
 
-                slide.template = int(request.POST['template'])
-                slide.save()
+                if hasTemplate:
+                    slide.template = int(request.POST['template'])
+                    slide.save()
 
-                order = album.get_slide_order()
-                order.insert(int(request.POST['order']) - 1, order.pop(int(slide_id) - 1))
-                album.set_slide_order(order)
-                return HttpResponseRedirect('/albums/' + str(album_id) +  '/' + request.POST['order'])
+                if hasOrder:
+                    order = album.get_slide_order()
+                    order.insert(int(request.POST['order']) - 1, order.pop(int(slide_id) - 1))
+                    album.set_slide_order(order)
+                    newId = request.POST['order']
+                else:
+                    newId = slide_id
+
+                return HttpResponseRedirect('/albums/' + str(album_id) +  '/' + newId)
         else:
             return HttpResponseForbidden()
     else:
@@ -251,8 +267,11 @@ def slidephotomodifyPost(request, album_id, slide_id, photo_id):
 
             photo = get_object_or_404(Photo, pk=photo_id, slide=slide)
 
-            photo.description = str(request.POST['description'])
-            photo.link = str(request.POST['link']) # TODO: Verify if valid link to an image
+            if 'description' in request.POST:
+                photo.description = str(request.POST['description'])
+            if 'link' in request.POST:
+                photo.link = str(request.POST['link'])
+            
             photo.save()
             return HttpResponseRedirect('/albums/' + str(album_id) + '/' + str(slide_id))
         else:

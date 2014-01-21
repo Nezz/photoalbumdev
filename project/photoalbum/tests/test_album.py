@@ -91,22 +91,22 @@ class album_tests(TestCase):
         response = self.client.get('/albums/albumtwo/1', follow=True)
         self.assertEquals(response.status_code, 200, "Testing request status code")
         self.assertTemplateUsed(response, "album.html", "Testing that the right template was rendered")
-        self.assertContains(response, '<li class="disabled"><a href="#">&laquo;</a></li>')
-        self.assertNotContains(response, '<li class="disabled"><a href="#">&raquo;</a></li>"')
+        self.assertNotContains(response, 'moveleft')
+        self.assertContains(response, 'moveright')
 
     def test_albumGetMidbuttons(self):
         response = self.client.get('/albums/albumtwo/2', follow=True)
         self.assertEquals(response.status_code, 200, "Testing request status code")
         self.assertTemplateUsed(response, "album.html", "Testing that the right template was rendered")
-        self.assertNotContains(response, '<li class="disabled"><a href="#">&laquo;</a></li>')
-        self.assertNotContains(response, '<li class="disabled"><a href="#">&raquo;</a></li>')
+        self.assertContains(response, 'moveleft')
+        self.assertContains(response, 'moveright')
 
     def test_albumGetLastbuttons(self):
         response = self.client.get('/albums/albumtwo/3', follow=True)
         self.assertEquals(response.status_code, 200, "Testing request status code")
         self.assertTemplateUsed(response, "album.html", "Testing that the right template was rendered")
-        self.assertNotContains(response, '<li class="disabled"><a href="#">&laquo;</a></li>')
-        self.assertContains(response, '<li class="disabled"><a href="#">&raquo;</a></li>')
+        self.assertContains(response, 'moveleft')
+        self.assertNotContains(response, 'moveright')
 
     def test_albumGetDeletebutton(self):
         response = self.client.get('/albums/albumone/1', follow=True)
@@ -276,7 +276,7 @@ class album_tests(TestCase):
 	    * GET:
 		    * Owner login: Template editor
 		    * No login: Login page
-	    * POST: Modify order and template (Owner only)
+	    * POST: Modify order and/or template (Owner only)
     """
     def test_slideModifyGetNoLogin(self):
         response = self.client.get('/albums/albumtwo/1/modify', follow=True)
@@ -310,6 +310,14 @@ class album_tests(TestCase):
     def test_slideModifyPostOwner(self):
         self.client.login(username='admin2', password='admin2')
         response = self.client.post('/albums/albumtwo/1/modify', { "order" : "2", "template" : "3" }, follow=True)
+        self.assertEquals(response.status_code, 200, "Testing request status code")
+        self.assertTemplateUsed(response, "album.html", "Testing that the right template was rendered")
+
+        response = self.client.post('/albums/albumtwo/1/modify', { "order" : "2"}, follow=True)
+        self.assertEquals(response.status_code, 200, "Testing request status code")
+        self.assertTemplateUsed(response, "album.html", "Testing that the right template was rendered")
+
+        response = self.client.post('/albums/albumtwo/1/modify', { "template" : "3" }, follow=True)
         self.assertEquals(response.status_code, 200, "Testing request status code")
         self.assertTemplateUsed(response, "album.html", "Testing that the right template was rendered")
         # TODO: Test if worked
@@ -365,12 +373,20 @@ class album_tests(TestCase):
         self.assertEquals(response.status_code, 200, "Testing request status code")
 
     def test_photoModifyPostNologin(self):
-        response = self.client.post('/albums/albumone/1/1/modify', { "link" : "http://www.songarc.net", "description" : "test"  }, follow=True)
+        response = self.client.post('/albums/albumone/1/1/modify', { "link" : "http://www.songarc.net", "description" : "test" }, follow=True)
         self.assertEquals(response.status_code, 403, "Testing request status code")
 
     def test_photoModifyPostOwner(self):
         self.client.login(username='admin', password='admin')
-        response = self.client.post('/albums/albumone/1/1/modify', { "link" : "http://www.songarc.net", "description" : "test"  }, follow=True)
+        response = self.client.post('/albums/albumone/1/1/modify', { "link" : "http://www.songarc.net", "description" : "test" }, follow=True)
+        self.assertEquals(response.status_code, 200, "Testing request status code")
+        self.assertTemplateUsed(response, "album.html", "Testing that the right template was rendered")
+
+        response = self.client.post('/albums/albumone/1/1/modify', { "description" : "test" }, follow=True)
+        self.assertEquals(response.status_code, 200, "Testing request status code")
+        self.assertTemplateUsed(response, "album.html", "Testing that the right template was rendered")
+
+        response = self.client.post('/albums/albumone/1/1/modify', { "link" : "http://www.songarc.net"}, follow=True)
         self.assertEquals(response.status_code, 200, "Testing request status code")
         self.assertTemplateUsed(response, "album.html", "Testing that the right template was rendered")
         # TODO: Test if worked

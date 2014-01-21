@@ -1,15 +1,7 @@
 {% extends "base_panel.html" %}
 {% block title %}Your albums{% endblock %}
 {% block panelTitle %}Albums{% endblock %}
-{% block scripts %}
-<script>
-function submitForm(id) {
-    $('#' + id).submit();
-}
-</script>
-{% endblock %}
 {% block contentPanel %}
-
 <div class="row">
     {% for album in albums %}
     <div class="col-sm-6 col-md-3">
@@ -17,7 +9,7 @@ function submitForm(id) {
             <a href="{% url 'albumitem' album_id=album.guid %}"><img data-src="holder.js/100%x180/sky/text:{{album.name}}"></a>
             <div class="caption text-center">
                 <button class="btn btn-success" onclick="submitForm('order{{album.guid}}')"><span class="glyphicon glyphicon-shopping-cart icons-padding"></span> Order</button>
-                <button class="btn btn-danger" onclick="submitForm('delete{{album.guid}}')"><span class="glyphicon glyphicon-remove icons-padding"></span> Delete</button>
+                <button class="btn btn-danger" onclick="confirmForm('Delete album', 'Are you sure?', 'delete{{album.guid}}')"><span class="glyphicon glyphicon-remove icons-padding"></span> Delete</button>
                 <form action="{% url 'neworder' album_id=album.guid %}" method="post" id="order{{album.guid}}">{% csrf_token %}</form>
                 <form action="{% url 'albumitemdelete' album_id=album.guid %}" method="post" id="delete{{album.guid}}">{% csrf_token %}</form>
             </div>
