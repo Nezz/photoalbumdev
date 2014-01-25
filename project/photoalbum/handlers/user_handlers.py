@@ -1,6 +1,7 @@
 from django.http import HttpResponse, Http404, HttpResponseForbidden, HttpResponseRedirect, HttpResponseBadRequest
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.template import Context
 from photoalbum.rest import rest_helper
 from photoalbum.renderers.user_renderers import *
@@ -20,7 +21,7 @@ def indexHandler(request):
 
 def indexGet(request):
     if request.user.is_authenticated():
-        return HttpResponseRedirect('/albums/')
+        return HttpResponseRedirect(reverse('albumlist'))
     else:
         return welcome_view(request)
 
@@ -34,7 +35,7 @@ def loginHandler(request):
 
 def loginGet(request):
     if request.user.is_authenticated():
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect(reverse('index'))
     else:
         return login_view(request);
 
@@ -45,7 +46,7 @@ def loginPost(request):
     if user is not None:
         if user.is_active:
             login(request, user)
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect(reverse('index'))
         else:
             return HttpResponse("Not active")
     else:
@@ -61,7 +62,7 @@ def registerHandler(request):
 
 def registerGet(request):
     if request.user.is_authenticated():
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect(reverse('index'))
     else:
         return register_view(request);
 
@@ -74,7 +75,7 @@ def registerPost(request):
     	return HttpResponseBadRequest()
     	     
     user = User.objects.create_user(username, email, password)
-    return HttpResponseRedirect('/login/')
+    return HttpResponseRedirect(reverse('login'))
 
 """
  /logout/
@@ -83,4 +84,4 @@ def registerPost(request):
 """
 def logoutHandler(request):
     logout(request)
-    return HttpResponseRedirect('/')
+    return HttpResponseRedirect(reverse('index'))
