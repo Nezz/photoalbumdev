@@ -4,6 +4,7 @@ from django.core.context_processors import csrf
 from django.core.exceptions import ObjectDoesNotExist
 from django.template import RequestContext
 from photoalbum.models import Album, Slide, Photo
+from photoalbum.utils import get_slide_or_404
 
 def album_list_view(request):
     albums = Album.objects.filter(owner=request.user)
@@ -15,10 +16,7 @@ def album_view(request, album_id, slide_id=1):
     slide_id = int(slide_id)
     album = get_object_or_404(Album, guid=album_id)
 
-    if len(album.get_slide_order()) < int(slide_id):
-        raise Http404();
-
-    slide = get_object_or_404(Slide, pk=album.get_slide_order()[slide_id - 1])
+    slide = get_slide_or_404(album, slide_id)
 
     curr = slide_id
     maxSlide = len(album.get_slide_order())
@@ -52,17 +50,21 @@ def albummodify_view(request, album):
     c.update(csrf(request))
     return render_to_response("album_modify.html", RequestContext(request, c))
 
-def slidedelete_view(request, album, slide, slide_id):
+def slidedelete_view(request, album, slide_id):
+    slide = get_slide_or_404(album, slide_id)
     c = {"album" : album, "slide" : slide, "slide_id" : slide_id}
     c.update(csrf(request))
     return render_to_response("slide_delete.html", RequestContext(request, c))
 
-def slidemodify_view(request, album, slide, slide_id):
+def slidemodify_view(request, album, slide_id):
+    slide = get_slide_or_404(album, slide_id)
     c = {"album" : album, "slide" : slide, "slide_id" : slide_id}
     c.update(csrf(request))
     return render_to_response("slide_modify.html", RequestContext(request, c))
 
-def photomodify_view(request, album, slide, slide_id, photo):
+def photomodify_view(request, album, slide_id, photo_id):
+    slide = get_slide_or_404(album, slide_id)
+    photo = get_object_or_404(Photo, pk=photo_id, slide=slide)
     c = {"album" : album, "slide" : slide, "slide_id" : slide_id, "photo" : photo }
     c.update(csrf(request))
     return render_to_response("photo_modify.html", RequestContext(request, c))

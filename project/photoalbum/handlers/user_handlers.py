@@ -2,7 +2,7 @@ from django.http import HttpResponse, Http404, HttpResponseForbidden, HttpRespon
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.template import Context
-from photoalbum.rest import rest_helper
+from photoalbum.utils import rest_helper
 from photoalbum.renderers.user_renderers import *
 from photoalbum.models import Album
 from django import forms
