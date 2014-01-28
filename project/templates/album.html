@@ -1,11 +1,22 @@
 {% extends "base_panel.html" %}
 {% block title %}Album {{album.name}}{% endblock %}
-{% block panelTitle %}{{album.name}}{% endblock %}
-{% block contentPanel %}
+{% block panelTitle %}<a href="#" class="editable" data-name="name" data-type="text" data-url="{% url 'albumitemmodify' album_id=album.guid %}">{{album.name}}</a>{% endblock %}
 
+<!-- Hide change album button if JavaScript is enabled (and X-Editor works) -->
+{% if editable %}
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        $('#changealbumname').hide();
+    });
+</script>
+{% endblock %}
+{% endif %}
+
+{% block contentPanel %}
 {% if editable %}
 <div class="float-right text-right">
-    <a class="btn btn-primary" href="{% url 'albumitemmodify' album_id=album.guid %}" data-toggle="modal"><span class="glyphicon glyphicon-edit icons-padding"></span> Change album name</a>
+    <a class="btn btn-primary" id="changealbumname" href="{% url 'albumitemmodify' album_id=album.guid %}" data-toggle="modal"><span class="glyphicon glyphicon-edit icons-padding"></span> Change album name</a>
     <div class="btn-group">
         <a class="btn btn-default" href="{% url 'slideitemmodify' album_id=album.guid slide_id=curr %}" data-toggle="modal"><span class="glyphicon glyphicon-th-large icons-padding"></span> Change template</a>
         <button class="btn btn-success" onclick="submitForm('newslide')"><span class="glyphicon glyphicon-plus icons-padding"></span> New slide</button>
@@ -17,6 +28,7 @@
 <form action="{% url 'albumitem' album_id=album.guid %}" method="post" id="newslide">{% csrf_token %}
     <input type="hidden" name="after" value="{{curr}}">
 </form>
+<br/>
 {% endif %}
             
 <div class="row">
@@ -25,16 +37,11 @@
         <div class="thumbnail">
             {% if editable %}<a href="{% url 'slideitemphotomodify' album_id=album.guid slide_id=curr photo_id=photo.pk %}" data-toggle="modal">{% endif %}<img {% if photo.link %}src="{{photo.link}}"{% else %}data-src="holder.js/100%x180/social/text:No image"{% endif %}>{% if editable %}</a>{% endif %}
             <div class="caption text-center">
-                <p>{{photo.description}}</p>
-                {% if editable %}
-                <div class="btn-group">
-                    <button class="btn btn-primary" onclick="modifyDescription('{{photo.pk}}')"><span class="glyphicon glyphicon-edit icons-padding"></span> Description</button>
-                    <a class="btn btn-primary" href="{% url 'slideitemphotomodify' album_id=album.guid slide_id=curr photo_id=photo.pk %}" data-toggle="modal"><span class="glyphicon glyphicon-edit icons-padding"></span> Link</a>
-                </div>
-                <form action="{% url 'slideitemphotomodify' album_id=album.guid slide_id=curr photo_id=photo.pk %}" method="post" id="modifydesc{{photo.pk}}">{% csrf_token %}
-                    <input type="hidden" id="photodesc{{photo.pk}}" name="description">
-                </form>
-                {% endif %}
+                <p>
+                    {% if editable %}<a href="#" class="editable" data-name="description" data-type="text" data-url="{% url 'slideitemphotomodify' album_id=album.guid slide_id=curr photo_id=photo.pk %}">{% endif %}
+                    {{photo.description}}
+                    {% if editable %}</a>{% endif %}
+                </p>
             </div>
         </div>
     </div>
