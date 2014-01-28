@@ -35,7 +35,7 @@
     {% for photo in photos %}
     <div class="col-sm-6 col-md-3">
         <div class="thumbnail">
-            {% if editable %}<a href="{% url 'slideitemphotomodify' album_id=album.guid slide_id=curr photo_id=photo.pk %}" data-toggle="modal">{% endif %}<img {% if photo.link %}src="{{photo.link}}"{% else %}data-src="holder.js/100%x180/social/text:No image"{% endif %}>{% if editable %}</a>{% endif %}
+            {% if editable %}<a href="{% url 'slideitemphotomodify' album_id=album.guid slide_id=curr photo_id=photo.pk %}" data-toggle="modal">{% endif %}<img {% if photo.link %}src="{{photo.link}}"{% else %}data-src="holder.js/100%x180/social/text:No image"{% endif %} alt="Photo">{% if editable %}</a>{% endif %}
             <div class="caption text-center">
                 <p>
                     {% if editable %}<a href="#" class="editable" data-name="description" data-type="text" data-url="{% url 'slideitemphotomodify' album_id=album.guid slide_id=curr photo_id=photo.pk %}">{% endif %}

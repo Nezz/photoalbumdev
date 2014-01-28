@@ -6,7 +6,7 @@
     {% for album in albums %}
     <div class="col-sm-6 col-md-3">
         <div class="thumbnail">
-            <a href="{% url 'albumitem' album_id=album.guid %}"><img data-src="holder.js/100%x180/sky/text:{{album.name|urlencode}}"></a>
+            <a href="{% url 'albumitem' album_id=album.guid %}"><img data-src="holder.js/100%x180/sky/text:{{album.name|urlencode}}" alt="{{album.name}}"></a>
             <div class="caption text-center">
                 <button class="btn btn-success" onclick="submitForm('order{{album.guid}}')"><span class="glyphicon glyphicon-shopping-cart icons-padding"></span> Order</button>
                 <a class="btn btn-danger" href="{% url 'albumitemdelete' album_id=album.guid %}" data-toggle="modal"><span class="glyphicon glyphicon-remove icons-padding"></span> Delete</a>
@@ -19,7 +19,7 @@
 
     <div class="col-sm-6 col-md-3">
         <div class="thumbnail">
-            <a href="#" onclick="submitForm('newalbum')"><img data-src="holder.js/100%x180/social/text:New album"></a>
+            <a href="#" onclick="submitForm('newalbum')"><img data-src="holder.js/100%x180/social/text:New album" alt="New album"></a>
             <div class="caption text-center">
                 <button class="btn btn-primary" onclick="submitForm('newalbum')"><span class="glyphicon glyphicon-plus icons-padding"></span> Create a new album</button>
                 <form action="{% url 'albumlist' %}" method="post" id="newalbum">{% csrf_token %}</form>
