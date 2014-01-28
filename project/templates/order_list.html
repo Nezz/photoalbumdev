@@ -7,7 +7,7 @@
     {% for order in orders %}
     <div class="col-sm-6 col-md-3">
         <div class="thumbnail">
-            <img data-src="holder.js/100%x180/sky/text:{{order.album.name}}">
+            <img data-src="holder.js/100%x180/sky/text:{{order.album.name}}" alt="{{order.album.name}}">
             <div class="caption text-center">
                 {{order.time_placed}}
                 <form action="{% url 'orderitemdelete' order_id=order.pk %}" method="post">{% csrf_token %}
