@@ -5,12 +5,13 @@
         <title>{% block title %}{% endblock %}</title>
         <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
         <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css" rel="stylesheet">
+        <link href="{% static 'bootstrap3-editable/css/bootstrap-editable.css' %}" rel="stylesheet"/>
         {% block styles %}{% endblock %}
     </head>
 	<body>
 		<script src="https://code.jquery.com/jquery.js"></script>
 	    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-	    <script src="{% static 'bootbox/bootbox.min.js' %}"></script> <!-- TODO: Remove bootbox, modifyDescription -->
+	    <script src="{% static 'bootstrap3-editable/js/bootstrap-editable.min.js' %}"></script>
 	    <script src="{% static 'holder/holder.js' %}"></script>
         <script src="{% static 'helpers.js' %}"></script>
         {% block scripts %} {% endblock %}

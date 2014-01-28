@@ -1,20 +1,28 @@
 {% extends request.is_ajax|yesno:"base_ajax.html,base.html" %}
 {% block content %}
 <div class="modal-header">
-    <h3>Change photo</h3>
+    <h3>Edit photo</h3>
 </div>
 
 <div class="modal-body">
-    <p>What should be the new URL of the photo?</p>
-    <input type="text" class="form-control" placeholder="URL" id="photoinput">
+    <div class="input-group">
+        <span class="input-group-addon">Link</span>
+        <input type="text" class="form-control" value="{{photo.link}}" id="photolinkinput">
+    </div>
+    <br/>
+    <div class="input-group">
+        <span class="input-group-addon">Description</span>
+        <input type="text" class="form-control" value="{{photo.description}}" id="photodescinput">
+    </div>
 </div>
 
 <div class="modal-footer">
     <a href="{% if request.is_ajax %}#{% else %}{% url 'albumitem' album_id=album.guid %}{% endif %}" class="btn" data-dismiss="modal">Cancel</a>
-    <a href="#" class="btn btn-primary" data-dismiss="modal" onclick="submitForm('modifylink{{photo.pk}}', { '#photolink' : $('#photoinput').val() })">Save</a>
+    <a href="#" class="btn btn-primary" data-dismiss="modal" onclick="submitForm('modifylink{{photo.pk}}', { '#photolink' : $('#photolinkinput').val(), '#photodesc' : $('#photodescinput').val() })">Save</a>
 </div>
 
 <form role="form" action="{% url 'slideitemphotomodify' album_id=album.guid slide_id=slide_id photo_id=photo.pk %}" method="post" id="modifylink{{photo.pk}}">{% csrf_token %}
     <input type="hidden" name="link" id="photolink"/>
+    <input type="hidden" name="description" id="photodesc"/>
 </form>
 {% endblock %}
