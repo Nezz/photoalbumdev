@@ -8,6 +8,10 @@ from photoalbum.renderers.user_renderers import *
 from photoalbum.models import Album
 from django import forms
 from django.core.validators import validate_email
+from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
+from django.template import Context
 
 """
  /
@@ -75,6 +79,15 @@ def registerPost(request):
     	return HttpResponseBadRequest()
     	     
     user = User.objects.create_user(username, email, password)
+    plaintext = get_template('email.txt')
+    htmly     = get_template('email.html')
+    d = Context({ 'username': username })
+    subject, from_email, to = 'hello', 'petyalovei@gmail.com', email
+    text_content = plaintext.render(d)
+    html_content = htmly.render(d)
+    msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
     return HttpResponseRedirect(reverse('login'))
 
 """
