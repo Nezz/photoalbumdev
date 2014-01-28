@@ -1,51 +1,20 @@
-function submitForm(id) {
+function submitForm(id, parameters) {
+    for (var key in parameters) {
+        $(key).val(parameters[key]);
+    }
     $('#' + id).submit();
 }
 
-function yesnodialog(title, message, callback) {
-    bootbox.dialog({
-        message: message,
-        title: title,
-        buttons: {
-            no: {
-                label: "No",
-                className: "btn-default",
-                callback: function () { }
-            },
-            yes: {
-                label: "Yes",
-                className: "btn-primary",
-                callback: function () {
-                    callback();
-                }
-            }
-        }
-    });
-}
+$(document).ready(function () {
+    $('[data-toggle="modal"]').click(function (e) {
+        e.preventDefault();
+        $.get($(this).attr('href'), function (data) {
+            $("#modalWindowContent").html(data);
+            $("#modalWindow").modal(show = true, backdrop = false);
+        });
 
-function confirmForm(title, message, id) {
-    yesnodialog(title, message, function () {
-        submitForm(id);
     });
-}
-
-function modifyAlbum() {
-    bootbox.prompt("What should be the new name of the album?", function (result) {
-        if (result !== null) {
-            $("#albumname").val(result);
-            $("#modifyalbum").submit();
-        }
-    });
-}
-
-function modifyLink(id) {
-    bootbox.prompt("What should be the new link of the photo?", function (result) {
-        if (result !== null) {
-            $("#photolink" + id).val(result);
-            $("#modifylink" + id).submit();
-        }
-    });
-}
+});
 
 function modifyDescription(id) {
     bootbox.prompt("What should be the new description of the photo?", function (result) {

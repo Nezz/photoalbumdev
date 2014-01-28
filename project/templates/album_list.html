@@ -6,12 +6,12 @@
     {% for album in albums %}
     <div class="col-sm-6 col-md-3">
         <div class="thumbnail">
-            <a href="{% url 'albumitem' album_id=album.guid %}"><img data-src="holder.js/100%x180/sky/text:{{album.name}}"></a>
+            <a href="{% url 'albumitem' album_id=album.guid %}"><img data-src="holder.js/100%x180/sky/text:{{album.name|urlencode}}"></a>
             <div class="caption text-center">
                 <button class="btn btn-success" onclick="submitForm('order{{album.guid}}')"><span class="glyphicon glyphicon-shopping-cart icons-padding"></span> Order</button>
-                <button class="btn btn-danger" onclick="confirmForm('Delete album', 'Are you sure?', 'delete{{album.guid}}')"><span class="glyphicon glyphicon-remove icons-padding"></span> Delete</button>
+                <a class="btn btn-danger" href="{% url 'albumitemdelete' album_id=album.guid %}" data-toggle="modal"><span class="glyphicon glyphicon-remove icons-padding"></span> Delete</a>
+
                 <form action="{% url 'neworder' album_id=album.guid %}" method="post" id="order{{album.guid}}">{% csrf_token %}</form>
-                <form action="{% url 'albumitemdelete' album_id=album.guid %}" method="post" id="delete{{album.guid}}">{% csrf_token %}</form>
             </div>
         </div>
     </div>

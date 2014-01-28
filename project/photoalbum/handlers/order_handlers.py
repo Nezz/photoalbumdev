@@ -1,8 +1,9 @@
 from django.http import HttpResponse, Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.template import Context
-from photoalbum.rest import rest_helper, get_or_none
+from photoalbum.utils import rest_helper, get_or_none
 from photoalbum.renderers.order_renderers import *
 
 """
@@ -61,4 +62,4 @@ def orderitemdeletePost(request, order_id):
         else:
             raise Http404()
     else:
-        return HttpResponseRedirect('/login/')
+        return HttpResponseRedirect(reverse('login'))

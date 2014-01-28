@@ -1,8 +1,9 @@
 from django.http import HttpResponse, Http404, HttpResponseForbidden, HttpResponseRedirect, HttpResponseBadRequest
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.template import Context
-from photoalbum.rest import rest_helper
+from photoalbum.utils import rest_helper, get_slide_or_404
 from photoalbum.renderers.album_renderers import *
 from photoalbum.models import Album, Slide, Photo
 import random
@@ -23,7 +24,7 @@ def albumlistGet(request):
     if request.user.is_authenticated():
         return album_list_view(request)
     else:
-        return HttpResponseRedirect('/login/')
+        return HttpResponseRedirect(reverse('login'))
 
 def albumlistPost(request):
     if request.user.is_authenticated():
@@ -61,7 +62,7 @@ def albumitemPost(request, album_id):
         else:
             newId = len(album.get_slide_order())
 
-        return HttpResponseRedirect('/albums/' + str(album_id) + '/' + str(newId))
+        return HttpResponseRedirect(reverse('slideitem', kwargs={'album_id' : album_id, 'slide_id' : newId}))
     else:
         return HttpResponseForbidden();
 
@@ -77,10 +78,10 @@ def albumdeleteHandler(request, album_id):
 
 def albumdeleteGet(request, album_id):
     album = get_object_or_404(Album, guid=album_id)
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('/login/')
-    elif album.owner == request.user:
-        raise Http404(); # TODO
+    if request.is_ajax() or album.owner == request.user:
+        return albumdelete_view(request, album)
+    elif not request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('login'))
     else:
         return HttpResponseForbidden()
 
@@ -88,7 +89,7 @@ def albumdeletePost(request, album_id):
     album = get_object_or_404(Album, guid=album_id)
     if album.owner == request.user:
         album.delete()
-        return HttpResponseRedirect('/albums/')
+        return HttpResponseRedirect(reverse('albumlist'))
     else:
         return HttpResponseForbidden()
 
@@ -104,10 +105,10 @@ def albummodifyHandler(request, album_id):
 
 def albummodifyGet(request, album_id):
     album = get_object_or_404(Album, guid=album_id)
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('/login/')
-    elif album.owner == request.user:
-        raise Http404(); # TODO
+    if request.is_ajax() or album.owner == request.user:
+        return albummodify_view(request, album)
+    elif not request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('login'))
     else:
         return HttpResponseForbidden()
 
@@ -117,7 +118,7 @@ def albummodifyPost(request, album_id):
         if album.owner == request.user:
             album.name = request.POST['name']
             album.save()
-            return HttpResponseRedirect('/albums/' + str(album_id))
+            return HttpResponseRedirect(reverse('albumitem', kwargs={'album_id' : album_id}))
         else:
             return HttpResponseForbidden()
     else:
@@ -148,22 +149,19 @@ def slidedeleteHandler(request, album_id, slide_id):
 
 def slidedeleteGet(request, album_id, slide_id):
     album = get_object_or_404(Album, guid=album_id)
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('/login/')
-    elif album.owner == request.user:
-        raise Http404(); # TODO
+    if request.is_ajax() or album.owner == request.user:
+        return slidedelete_view(request, album, slide_id)
+    elif not request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('login'))
     else:
         return HttpResponseForbidden()
 
 def slidedeletePost(request, album_id, slide_id):
     album = get_object_or_404(Album, guid=album_id)
     if album.owner == request.user and len(album.get_slide_order()) > 1:
-        if len(album.get_slide_order()) < int(slide_id):
-            raise Http404();
-        else:
-            slide = get_object_or_404(Slide, pk=album.get_slide_order()[int(slide_id) - 1])
-            slide.delete();
-            return HttpResponseRedirect('/albums/' + str(album_id))
+        slide = get_slide_or_404(album, slide_id)
+        slide.delete();
+        return HttpResponseRedirect(reverse('albumitem', kwargs={'album_id' : album_id}))
     else:
         return HttpResponseForbidden()
 
@@ -179,10 +177,10 @@ def slidemodifyHandler(request, album_id, slide_id):
 
 def slidemodifyGet(request, album_id, slide_id):
     album = get_object_or_404(Album, guid=album_id)
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('/login/')
-    elif album.owner == request.user:
-        raise Http404(); # TODO
+    if request.is_ajax() or album.owner == request.user:
+        return slidemodify_view(request, album, slide_id)
+    elif not request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('login'))
     else:
         return HttpResponseForbidden()
 
@@ -192,12 +190,10 @@ def slidemodifyPost(request, album_id, slide_id):
     if hasOrder or hasTemplate:
         album = get_object_or_404(Album, guid=album_id)
         if album.owner == request.user and len(album.get_slide_order()) > 1:
-            if len(album.get_slide_order()) < int(slide_id):
-                raise Http404();
-            elif hasOrder and int(request.POST['order']) > len(album.get_slide_order()):
+            if hasOrder and int(request.POST['order']) > len(album.get_slide_order()):
                 return HttpResponseBadRequest()
             else:
-                slide = get_object_or_404(Slide, pk=album.get_slide_order()[int(slide_id) - 1])
+                slide = get_slide_or_404(album, slide_id)
 
                 if hasTemplate:
                     slide.template = int(request.POST['template'])
@@ -211,7 +207,7 @@ def slidemodifyPost(request, album_id, slide_id):
                 else:
                     newId = slide_id
 
-                return HttpResponseRedirect('/albums/' + str(album_id) +  '/' + newId)
+                return HttpResponseRedirect(reverse('slideitem', kwargs={'album_id' : album_id, 'slide_id' : newId}))
         else:
             return HttpResponseForbidden()
     else:
@@ -226,13 +222,8 @@ def slidephotoHandler(request, album_id, slide_id, photo_id):
     return rest_helper(slidephotoGet, None, request, album_id, slide_id, photo_id)
 
 def slidephotoGet(request, album_id, slide_id, photo_id):
-    slide_id = int(slide_id)
     album = get_object_or_404(Album, guid=album_id)
-
-    if len(album.get_slide_order()) < int(slide_id):
-        raise Http404();
-
-    slide = get_object_or_404(Slide, pk=album.get_slide_order()[slide_id - 1])
+    slide = get_slide_or_404(album, slide_id)
     photo = get_object_or_404(Photo, pk=photo_id, slide=slide)
     return HttpResponseRedirect(photo.link)
 
@@ -248,10 +239,10 @@ def slidephotomodifyHandler(request, album_id, slide_id, photo_id):
 
 def slidephotomodifyGet(request, album_id, slide_id, photo_id):
     album = get_object_or_404(Album, guid=album_id)
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('/login/')
-    elif album.owner == request.user:
-        raise Http404(); # TODO
+    if request.is_ajax() or album.owner == request.user:
+        return photomodify_view(request, album, slide_id, photo_id)
+    elif not request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('login'))
     else:
         return HttpResponseForbidden()
 
@@ -259,11 +250,7 @@ def slidephotomodifyPost(request, album_id, slide_id, photo_id):
     if 'description' in request.POST or 'link' in request.POST: # May be empty, no need to check
         album = get_object_or_404(Album, guid=album_id)
         if album.owner == request.user:
-            slide_id = int(slide_id)
-            if len(album.get_slide_order()) < slide_id:
-                raise Http404();
-
-            slide = get_object_or_404(Slide, pk=album.get_slide_order()[slide_id - 1])
+            slide = get_slide_or_404(album, slide_id)
 
             photo = get_object_or_404(Photo, pk=photo_id, slide=slide)
 
@@ -273,7 +260,7 @@ def slidephotomodifyPost(request, album_id, slide_id, photo_id):
                 photo.link = str(request.POST['link'])
             
             photo.save()
-            return HttpResponseRedirect('/albums/' + str(album_id) + '/' + str(slide_id))
+            return HttpResponseRedirect(reverse('slideitem', kwargs={'album_id' : album_id, 'slide_id' : slide_id}))
         else:
             return HttpResponseForbidden()
     else:
