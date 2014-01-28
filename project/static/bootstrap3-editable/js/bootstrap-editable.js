@@ -301,27 +301,20 @@ Editableform is linked with one of input types, e.g. 'text', 'select' etc.
         },
 
         save: function(submitValue) {
-            //try parse composite pk defined as json string in data-pk 
-            this.options.pk = $.fn.editableutils.tryParseJson(this.options.pk, true); 
-            
-            var pk = (typeof this.options.pk === 'function') ? this.options.pk.call(this.options.scope) : this.options.pk,
             /*
               send on server in following cases:
               1. url is function
               2. url is string AND (pk defined OR send option = always) 
             */
-            send = !!(typeof this.options.url === 'function' || (this.options.url && ((this.options.send === 'always') || (this.options.send === 'auto' && pk !== null && pk !== undefined)))),
+            var send = !!(typeof this.options.url === 'function' || (this.options.url && ((this.options.send === 'always') || (this.options.send === 'auto')))),
             params;
 
             if (send) { //send to server
                 this.showLoading();
 
                 //standard params
-                params = {
-                    name: this.options.name || '',
-                    value: submitValue,
-                    pk: pk 
-                };
+                params = {};
+                params[this.options.name] = submitValue;
 
                 //additional params
                 if(typeof this.options.params === 'function') {
