@@ -37,7 +37,32 @@ def album_view(request, album_id, slide_id=1):
     photos = Photo.objects.filter(slide=slide)
     editable = album.owner == request.user
 
-    c = {"album": album, "curr" : curr, "next" : next, "prev" : prev, "max" : maxSlide, "paginators" : paginators, "photos" : photos, "editable" : editable}
+    c = {"album" : album, "curr" : curr, "next" : next, "prev" : prev, "max" : maxSlide, "paginators" : paginators, "photos" : photos, "editable" : editable}
     c.update(csrf(request))
 
     return render_to_response("album.html", RequestContext(request, c))
+
+def albumdelete_view(request, album):
+    c = {"album" : album }
+    c.update(csrf(request))
+    return render_to_response("album_delete.html", RequestContext(request, c))
+
+def albummodify_view(request, album):
+    c = {"album" : album }
+    c.update(csrf(request))
+    return render_to_response("album_modify.html", RequestContext(request, c))
+
+def slidedelete_view(request, album, slide, slide_id):
+    c = {"album" : album, "slide" : slide, "slide_id" : slide_id}
+    c.update(csrf(request))
+    return render_to_response("slide_delete.html", RequestContext(request, c))
+
+def slidemodify_view(request, album, slide, slide_id):
+    c = {"album" : album, "slide" : slide, "slide_id" : slide_id}
+    c.update(csrf(request))
+    return render_to_response("slide_modify.html", RequestContext(request, c))
+
+def photomodify_view(request, album, slide, slide_id, photo):
+    c = {"album" : album, "slide" : slide, "slide_id" : slide_id, "photo" : photo }
+    c.update(csrf(request))
+    return render_to_response("photo_modify.html", RequestContext(request, c))

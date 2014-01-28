@@ -1,0 +1,20 @@
+{% extends request.is_ajax|yesno:"base_ajax.html,base.html" %}
+{% block content %}
+<div class="modal-header">
+    <h3>Change slide template</h3>
+</div>
+
+<div class="modal-body">
+    <p>What should be the new template of slide number {{ slide_id }}?</p>
+    <input type="text" class="form-control" placeholder="TODO" id="slideinput">
+</div>
+
+<div class="modal-footer">
+    <a href="{% if request.is_ajax %}#{% else %}{% url 'slideitem' album_id=album.guid slide_id=slide_id %}{% endif %}" class="btn" data-dismiss="modal">Cancel</a>
+    <a href="#" class="btn btn-primary" data-dismiss="modal" onclick="submitForm('modify{{slide_id}}', { '#slidetemplate' : $('#slideinput').val() })">Save</a>
+</div>
+
+<form role="form" action="{% url 'slideitemmodify' album_id=album.guid slide_id=slide_id %}" method="post" id="modify{{slide_id}}">{% csrf_token %}
+    <input type="hidden" name="template" id="slidetemplate"/>
+</form>
+{% endblock %}

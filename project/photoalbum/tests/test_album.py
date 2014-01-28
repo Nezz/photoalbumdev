@@ -155,7 +155,7 @@ class album_tests(TestCase):
         self.client.login(username='admin', password='admin')
         response = self.client.get('/albums/albumone/delete', follow=True)
         self.assertEquals(response.status_code, 200, "Testing request status code")
-        self.assertTemplateUsed(response, "template.html", "Testing that the right template was rendered") # TODO
+        self.assertTemplateUsed(response, "album_delete.html", "Testing that the right template was rendered")
 
     def test_albumDeleteGetNonowner(self):
         self.client.login(username='admin2', password='admin2')
@@ -196,7 +196,7 @@ class album_tests(TestCase):
         self.client.login(username='admin', password='admin')
         response = self.client.get('/albums/albumone/modify', follow=True)
         self.assertEquals(response.status_code, 200, "Testing request status code")
-        self.assertTemplateUsed(response, "template.html", "Testing that the right template was rendered") # TODO
+        self.assertTemplateUsed(response, "album_modify.html", "Testing that the right template was rendered")
 
     def test_albumModifyGetNonowner(self):
         self.client.login(username='admin2', password='admin2')
@@ -239,7 +239,7 @@ class album_tests(TestCase):
         self.client.login(username='admin', password='admin')
         response = self.client.get('/albums/albumone/1/delete', follow=True)
         self.assertEquals(response.status_code, 200, "Testing request status code")
-        self.assertTemplateUsed(response, "template.html", "Testing that the right template was rendered") # TODO
+        self.assertTemplateUsed(response, "slide_delete.html", "Testing that the right template was rendered")
 
     def test_slideDeleteGetNonowner(self):
         self.client.login(username='admin2', password='admin2')
@@ -287,7 +287,7 @@ class album_tests(TestCase):
         self.client.login(username='admin2', password='admin2')
         response = self.client.get('/albums/albumtwo/1/modify', follow=True)
         self.assertEquals(response.status_code, 200, "Testing request status code")
-        self.assertTemplateUsed(response, "template.html", "Testing that the right template was rendered") # TODO
+        self.assertTemplateUsed(response, "slide_modify.html", "Testing that the right template was rendered")
 
     def test_slideModifyGetNonowner(self):
         self.client.login(username='admin', password='admin')
@@ -355,7 +355,7 @@ class album_tests(TestCase):
         self.client.login(username='admin', password='admin')
         response = self.client.get('/albums/albumone/1/1/modify', follow=True)
         self.assertEquals(response.status_code, 200, "Testing request status code")
-        self.assertTemplateUsed(response, "template.html", "Testing that the right template was rendered") # TODO
+        self.assertTemplateUsed(response, "photo_modify.html", "Testing that the right template was rendered")
 
     def test_photoModifyGetNonowner(self):
         self.client.login(username='admin2', password='admin2')
