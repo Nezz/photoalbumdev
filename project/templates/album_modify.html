@@ -1,0 +1,20 @@
+{% extends request.is_ajax|yesno:"base_ajax.html,base.html" %}
+{% block content %}
+<div class="modal-header">
+    <h3>Change album name</h3>
+</div>
+
+<div class="modal-body">
+    <p>What should be the new name of "{{ album.name }}"?</p>
+    <input type="text" class="form-control" placeholder="Album name" id="albuminput">
+</div>
+
+<div class="modal-footer">
+    <a href="{% if request.is_ajax %}#{% else %}{% url 'albumitem' album_id=album.guid %}{% endif %}" class="btn" data-dismiss="modal">Cancel</a>
+    <a href="#" class="btn btn-primary" data-dismiss="modal" onclick="submitForm('modify{{album.guid}}', { '#albumname' : $('#albuminput').val() })">Save</a>
+</div>
+
+<form role="form" action="{% url 'albumitemmodify' album_id=album.guid %}" method="post" id="modify{{album.guid}}">{% csrf_token %}
+    <input type="hidden" name="name" id="albumname"/>
+</form>
+{% endblock %}

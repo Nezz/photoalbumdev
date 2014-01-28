@@ -37,6 +37,7 @@
     <Compile Include="photoalbum\renderers\*.py" />
     <Compile Include="photoalbum\tests\*.py" />
     <Compile Include="photoalbum\templatetags\*.py" />
+    <Compile Include="static\*.js" />
     <Compile Include="templates\*.html" />
   </ItemGroup>
   <ItemGroup>
