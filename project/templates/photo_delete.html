@@ -1,0 +1,17 @@
+{% extends request.is_ajax|yesno:"base_ajax.html,base.html" %}
+{% block content %}
+<div class="modal-header">
+    <h3>Delete photo</h3>
+</div>
+
+<div class="modal-body">
+    Are you sure you want to delete the selected photo?
+</div>
+
+<div class="modal-footer">
+    <a href="{% if request.is_ajax %}#{% else %}{% url 'slideitem' album_id=album.guid slide_id=slide_id %}{% endif %}" class="btn" data-dismiss="modal">No</a>
+    <a href="#" class="btn btn-primary" data-dismiss="modal" onclick="submitForm('deletephoto{{photo.pk}}')">Yes</a>
+</div>
+
+<form action="{% url 'slideitemphotodelete' album_id=album.guid slide_id=slide_id photo_id=photo.pk %}" method="post" id="deletephoto{{photo.pk}}">{% csrf_token %}</form>
+{% endblock %}
