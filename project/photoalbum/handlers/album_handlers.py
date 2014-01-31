@@ -129,13 +129,22 @@ def albummodifyPost(request, album_id):
 	* GET:
 		* Owner login: Album editor at specific slide
 		* No login: Album viewer at specific slide
-	* POST: N/A
+	* POST: New photo (owner only)
 """
 def slideitemHandler(request, album_id, slide_id):
-    return rest_helper(slideitemGet, None, request, album_id, slide_id)
+    return rest_helper(slideitemGet, slideitemPost, request, album_id, slide_id)
 
 def slideitemGet(request, album_id, slide_id):
     return album_view(request, album_id, slide_id)
+
+def slideitemPost(request, album_id, slide_id):
+    album = get_object_or_404(Album, guid=album_id)
+    if album.owner == request.user:
+        slide = get_slide_or_404(album, slide_id)
+        Photo.objects.create(slide=slide)
+        return HttpResponseRedirect(reverse('slideitem', kwargs={'album_id' : album_id, 'slide_id' : newId}))
+    else:
+        return HttpResponseForbidden();
 
 """
  /albums/<Album ID>/<Slide ID>/delete
@@ -158,7 +167,7 @@ def slidedeleteGet(request, album_id, slide_id):
 
 def slidedeletePost(request, album_id, slide_id):
     album = get_object_or_404(Album, guid=album_id)
-    if album.owner == request.user and len(album.get_slide_order()) > 1:
+    if album.owner == request.user and len(album.get_slide_order()) > 1: # Only allow delete if this isn't the only slide
         slide = get_slide_or_404(album, slide_id)
         slide.delete();
         return HttpResponseRedirect(reverse('albumitem', kwargs={'album_id' : album_id}))
@@ -189,7 +198,7 @@ def slidemodifyPost(request, album_id, slide_id):
     hasTemplate = 'template' in request.POST and request.POST['template']
     if hasOrder or hasTemplate:
         album = get_object_or_404(Album, guid=album_id)
-        if album.owner == request.user and len(album.get_slide_order()) > 1:
+        if album.owner == request.user:
             if hasOrder and int(request.POST['order']) > len(album.get_slide_order()):
                 return HttpResponseBadRequest()
             else:
@@ -226,6 +235,35 @@ def slidephotoGet(request, album_id, slide_id, photo_id):
     slide = get_slide_or_404(album, slide_id)
     photo = get_object_or_404(Photo, pk=photo_id, slide=slide)
     return HttpResponseRedirect(photo.link)
+
+"""
+ /albums/<Album ID>/<Slide ID>/<Photo ID>/delete
+	* GET:
+		* Owner login: Are you sure you want to delete?
+		* No login: Login page 
+	* POST: Delete photo (Owner only)
+"""
+def slidephotodeleteHandler(request, album_id, slide_id, photo_id):
+    return rest_helper(slidephotodeleteGet, slidephotodeletePost, request, album_id, slide_id, photo_id)
+
+def slidephotodeleteGet(request, album_id, slide_id, photo_id):
+    album = get_object_or_404(Album, guid=album_id)
+    if request.is_ajax() or album.owner == request.user:
+        return photodelete_view(request, album, slide_id, photo_id)
+    elif not request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('login'))
+    else:
+        return HttpResponseForbidden()
+
+def slidephotodeletePost(request, album_id, slide_id, photo_id):
+    album = get_object_or_404(Album, guid=album_id)
+    if album.owner == request.user:
+        slide = get_slide_or_404(album, slide_id)
+        photo = get_object_or_404(Photo, pk=photo_id, slide=slide)
+        photo.delete()
+        return HttpResponseRedirect(reverse('albumitem', kwargs={'album_id' : album_id}))
+    else:
+        return HttpResponseForbidden()
 
 """
  /albums/<Album ID>/<Slide ID>/<Photo ID>/modify

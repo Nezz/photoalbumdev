@@ -62,9 +62,16 @@ def slidemodify_view(request, album, slide_id):
     c.update(csrf(request))
     return render_to_response("slide_modify.html", RequestContext(request, c))
 
+def photodelete_view(request, album, slide_id, photo_id):
+    slide = get_slide_or_404(album, slide_id)
+    photo = get_object_or_404(Photo, pk=photo_id, slide=slide)
+    c = {"album" : album, "slide_id" : slide_id, "photo" : photo}
+    c.update(csrf(request))
+    return render_to_response("photo_delete.html", RequestContext(request, c))
+
 def photomodify_view(request, album, slide_id, photo_id):
     slide = get_slide_or_404(album, slide_id)
     photo = get_object_or_404(Photo, pk=photo_id, slide=slide)
-    c = {"album" : album, "slide" : slide, "slide_id" : slide_id, "photo" : photo }
+    c = {"album" : album, "slide_id" : slide_id, "photo" : photo }
     c.update(csrf(request))
     return render_to_response("photo_modify.html", RequestContext(request, c))
