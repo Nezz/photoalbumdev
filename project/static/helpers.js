@@ -7,7 +7,7 @@ function submitForm(id, parameters) {
 
 // Show modals using AJAX. Without JavaScript the url will be opened.
 $(document).ready(function () {
-    $('[data-toggle="modal"]').click(function (e) {
+    $('[data-toggle="ajaxmodal"]').click(function (e) {
         e.preventDefault();
         $.get($(this).attr('href'), function (data) {
             $("#modalWindowContent").html(data);

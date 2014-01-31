@@ -9,7 +9,7 @@
             <a href="{% url 'albumitem' album_id=album.guid %}"><img data-src="holder.js/100%x180/sky/text:{{album.name|urlencode}}" alt="{{album.name}}"></a>
             <div class="caption text-center">
                 <button class="btn btn-success" onclick="submitForm('order{{album.guid}}')"><span class="glyphicon glyphicon-shopping-cart icons-padding"></span> Order</button>
-                <a class="btn btn-danger" href="{% url 'albumitemdelete' album_id=album.guid %}" data-toggle="modal"><span class="glyphicon glyphicon-remove icons-padding"></span> Delete</a>
+                <a class="btn btn-danger" href="{% url 'albumitemdelete' album_id=album.guid %}" ajaxmodaldata-toggle="ajaxmodal"><span class="glyphicon glyphicon-remove icons-padding"></span> Delete</a>
 
                 <form action="{% url 'neworder' album_id=album.guid %}" method="post" id="order{{album.guid}}">{% csrf_token %}</form>
             </div>
