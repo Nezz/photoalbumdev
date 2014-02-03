@@ -15,7 +15,8 @@ class Album(models.Model):
         return 'Album "%s" by %s (GUID: %s, ID: %s)' % (self.name, self.owner, self.guid, self.pk)
 
 class Slide(models.Model):
-    template = models.IntegerField(default=0)
+    template = models.IntegerField(default=1)
+    maxphoto = models.IntegerField(default=2)
     album = models.ForeignKey('Album')
 
     def __str__(self):
@@ -26,7 +27,10 @@ class Slide(models.Model):
 
 class Photo(models.Model):
     link = models.URLField(max_length=255, blank=True)
-    description = models.TextField()
+    description = models.TextField(blank=True)
+    height = models.IntegerField(blank=True)
+    width = models.IntegerField(blank=True)
+    left = models.IntegerField(blank=True)
     slide = models.ForeignKey('Slide')
 
     def __str__(self):

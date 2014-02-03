@@ -50,9 +50,9 @@ def albumitemGet(request, album_id):
 def albumitemPost(request, album_id):
     album = get_object_or_404(Album, guid=album_id)
     if album.owner == request.user:
-        newSlide = Slide.objects.create(template=0, album=album)
-        for i in range(0,4):
-            Photo.objects.create(slide=newSlide)
+        newSlide = Slide.objects.create(template=1, album=album, maxphoto=2)
+        for i in range(0,2):
+             Photo.objects.create(slide=newSlide, height=0, width=0, left=0)
 
         if 'after' in request.POST:
             order = album.get_slide_order()
@@ -141,8 +141,8 @@ def slideitemPost(request, album_id, slide_id):
     album = get_object_or_404(Album, guid=album_id)
     if album.owner == request.user:
         slide = get_slide_or_404(album, slide_id)
-        Photo.objects.create(slide=slide)
-        return HttpResponseRedirect(reverse('slideitem', kwargs={'album_id' : album_id, 'slide_id' : newId}))
+        Photo.objects.create(slide=slide, height=100, width=100, left=100)
+        return HttpResponseRedirect(reverse('slideitem', kwargs={'album_id' : album_id, 'slide_id' : slide_id}))
     else:
         return HttpResponseForbidden();
 
@@ -204,8 +204,14 @@ def slidemodifyPost(request, album_id, slide_id):
             else:
                 slide = get_slide_or_404(album, slide_id)
 
-                if hasTemplate:
+                if hasTemplate:                  
                     slide.template = int(request.POST['template'])
+                    if slide.template == 1:
+                    	slide.maxphoto = 2
+                    elif slide.template == 2:
+                    	slide.maxphoto = 3
+                    else:
+                    	slide.maxphoto = 4
                     slide.save()
 
                 if hasOrder:
@@ -213,6 +219,7 @@ def slidemodifyPost(request, album_id, slide_id):
                     order.insert(int(request.POST['order']) - 1, order.pop(int(slide_id) - 1))
                     album.set_slide_order(order)
                     newId = request.POST['order']
+                    
                 else:
                     newId = slide_id
 
@@ -285,7 +292,7 @@ def slidephotomodifyGet(request, album_id, slide_id, photo_id):
         return HttpResponseForbidden()
 
 def slidephotomodifyPost(request, album_id, slide_id, photo_id):
-    if 'description' in request.POST or 'link' in request.POST: # May be empty, no need to check
+    if 'description' in request.POST or 'link' in request.POST or 'height' in request.POST or 'width' in request.POST or 'left' in request.POST: # May be empty, no need to check
         album = get_object_or_404(Album, guid=album_id)
         if album.owner == request.user:
             slide = get_slide_or_404(album, slide_id)
@@ -296,6 +303,12 @@ def slidephotomodifyPost(request, album_id, slide_id, photo_id):
                 photo.description = str(request.POST['description'])
             if 'link' in request.POST:
                 photo.link = str(request.POST['link'])
+            if 'height' in request.POST:
+            	photo.height = int(request.POST['height'])
+            if 'width' in request.POST:
+            	photo.height = int(request.POST['width'])
+            if 'left' in request.POST:
+            	photo.height = int(request.POST['left']) 
             
             photo.save()
             return HttpResponseRedirect(reverse('slideitem', kwargs={'album_id' : album_id, 'slide_id' : slide_id}))
