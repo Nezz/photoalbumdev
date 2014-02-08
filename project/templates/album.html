@@ -54,7 +54,7 @@
           		stop: function() {
           			$.ajax({
 					type: "POST",
-					url:"{{photo.pk}}/modify",
+					url:"{% url 'slideitemphotomodify' album_id=album.guid slide_id=curr photo_id=photo.pk %}",
 					data: { 
 					'width': $('#draggable'+{{forloop.counter}}).width(),
 					'height': $('#draggable'+{{forloop.counter}}).height(),
@@ -79,7 +79,7 @@
          		stop: function() {
           			$.ajax({
 					type: "POST",
-					url:"{{photo.pk}}/modify",
+					url:"{% url 'slideitemphotomodify' album_id=album.guid slide_id=curr photo_id=photo.pk %}",
 					data: { 
 					'top': $('#draggable'+{{forloop.counter}}).position().top,
 					'left': $('#draggable'+{{forloop.counter}}).position().left,
