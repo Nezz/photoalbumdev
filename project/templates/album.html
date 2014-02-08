@@ -4,7 +4,6 @@
 {% block title %}Album {{album.name}}{% endblock %}
 {% block styles %}  <link href="{% static 'albumtemplate' %}{{template}}.css" rel="stylesheet"> {% endblock %}
 {% block panelTitle %}
-<nav class="navbar navbar-default" role="navigation">
 
 	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 	    <ul class="nav navbar-nav">
@@ -24,7 +23,6 @@
     </div>
 	    </ul>
     </div>
-</nav>
 {% endblock %}
 
 <!-- Hide change album button if JavaScript is enabled (and X-Editor works) -->
@@ -38,12 +36,79 @@
         $(".modify").hide();
        
          {% for photo in photos %}
-         	 $("#draggableCaption"+{{forloop.counter}}).draggable({
-        	containment: "#draggable"+{{forloop.counter}},
- 					stop: function() {
- 					},
- 					axis: 'y',
-        	});
+         	$("#draggable"+{{forloop.counter}}).width({{photo.width}});
+         	$("#draggable"+{{forloop.counter}}).height({{photo.height}});
+         	$("#draggable"+{{forloop.counter}}).css({
+         		'top': '{{photo.top}}px',
+         		'left': '{{photo.left}}px',
+         		
+         	});
+         	
+         
+         	$('#draggable'+{{forloop.counter}}).resizable({
+         		handlers: 'n, s, e, w',
+         		containment: $('#content'),
+//           		alsoResize: $("#draggableCaption"+{{forloop.counter}}),
+          		aspectRatio: true,
+          		maxWidth: '400px',
+          		stop: function() {
+          			$.ajax({
+					type: "POST",
+					url:"{{photo.pk}}/modify",
+					data: { 
+					'width': $('#draggable'+{{forloop.counter}}).width(),
+					'height': $('#draggable'+{{forloop.counter}}).height(),
+					
+					},
+					success: function(data){            
+
+						console.log($('#draggable'+{{forloop.counter}}).width());
+
+					},
+					error: function(){
+						alert("Error");
+					},
+          		});
+          		}
+         		
+         		//ghost: true,
+         	});
+         	$("#draggable"+{{forloop.counter}}).draggable( {
+         		containment: $('#content'),
+         		//appendTo: 'body',
+         		stop: function() {
+          			$.ajax({
+					type: "POST",
+					url:"{{photo.pk}}/modify",
+					data: { 
+					'top': $('#draggable'+{{forloop.counter}}).position().top,
+					'left': $('#draggable'+{{forloop.counter}}).position().left,
+					
+					},
+					success: function(data){            
+
+						console.log($('#draggable'+{{forloop.counter}}).width());
+
+					},
+					error: function(){
+						alert("Error");
+					},
+          		});
+          		}
+         	});
+         	
+         
+         	//  $("#draggable"+{{forloop.counter}}).draggable({
+//         	containment: "#content",
+//  					stop: function() {
+//  					},
+//         	});
+//         	 $("#draggable"+{{forloop.counter}}).resizable({
+//         	containment: "#content",
+//         	handles: "s,e,n,w",
+//  					stop: function() {
+//  					},
+//         	});
  		{% endfor %}
 	{% endif %}
      });
@@ -77,14 +142,19 @@
 		<div id="draggable{{forloop.counter}}" class="frame" onMouseOver="showButtons($('#draggable'+{{forloop.counter}}))" onMouseOut="hideButtons($('#draggable'+{{forloop.counter}}))">
 			
 			
-			 <div class="caption text-center" id="draggableCaption{{forloop.counter}}">
-			 	{% if photo.link %} <img src="{{photo.link}}" alt="Photo" /> {% else %} a {% endif %}
-                <p>
-                    {% if editable %}<a href="#" class="editable draggableCaption" data-name="description" data-type="text" data-url="{% url 'slideitemphotomodify' album_id=album.guid slide_id=curr photo_id=photo.pk %}">{% endif %}
-                    {{photo.description}}
-                    {% if editable %}</a>{% endif %}
-                </p>
-            </div>
+			 
+			 	{% if photo.link %} <img src="{{photo.link}}" alt="Photo" id="draggableImage{{forloop.counter}}"/> {% else %} a {% endif %}
+			 	<div class="caption text-center draggableCaption" id="draggableCaption{{forloop.counter}}">
+					<p>
+						{% if editable %}<a href="#" class="editable" data-name="description" data-type="text" data-url="{% url 'slideitemphotomodify' album_id=album.guid slide_id=curr photo_id=photo.pk %}">{% endif %}
+						{{photo.description}}
+						{% if editable %}</a>{% endif %}
+					</p>
+                </div>
+
+                
+            
+            
 			<div class="btn-group modify text-center">
 				{% if editable %}<a class ="btn btn-success" href="{% url 'slideitemphotomodify' album_id=album.guid slide_id=curr photo_id=photo.pk %}" data-toggle="ajaxmodal" id="draggableLinkEd+{{forloop.counter}}">Edit</a>{% endif %}
 				{% if editable %}<a class="btn btn-danger" href="{% url 'slideitemphotodelete' album_id=album.guid slide_id=curr photo_id=photo.pk %}" data-toggle="ajaxmodal" id="draggableLinkDel+{{forloop.counter}}">Delete</a>{% endif %}

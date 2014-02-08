@@ -31,6 +31,7 @@ class Photo(models.Model):
     height = models.IntegerField(blank=True)
     width = models.IntegerField(blank=True)
     left = models.IntegerField(blank=True)
+    top = models.IntegerField(blank=True)
     slide = models.ForeignKey('Slide')
 
     def __str__(self):

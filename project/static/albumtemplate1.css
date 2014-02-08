@@ -1,8 +1,14 @@
+body {
+/* 	overflow: hidden; */
+}
+
 #content {
 	width: 100%;
-	height: 640px;
+	height: 580px;
 	border-style: solid;
 	border-width: 1px;
+	display: inline-block;
+	position: relative;
 }
 
 /* 
@@ -18,36 +24,41 @@
 }
 
 .frame {
+	display: inline-block;
 	border-style: dashed;
 	border-width: 3px;
+	position: absolute;
+}
+
+.draggableCaption {
+	position: absolute;
+	bottom: 0;
+	margin-right: auto;
+	margin-left: auto;
 }
 
 
 img {
 	display: block;
-	max-width: 100%;
-	max-height: 100%; 
-	width: auto;
-	position: relative;
-	margin-left: auto;
-	margin-right: auto;
+	width: 100%;
+	height: 90%;
+	position: absolute;
 }
 
-.draggableCaption {
-	position: relative;
-}
 
+
+ 
+ 
+ 
 #draggable1 {
-	position: relative;
+	position: absolute;
 	width: 50%;
 	height: 100%;
-	float: left;
 }
 
 #draggable2 {
 	position: relative;
 	width: 50%;
 	height: 100%;
-	float: right;
 }
 

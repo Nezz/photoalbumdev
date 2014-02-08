@@ -1,7 +1,7 @@
 var id = 0;
 
 $(document).ready(function(){
-			  
+	
 });
 		  
 function addNewPhoto() {
