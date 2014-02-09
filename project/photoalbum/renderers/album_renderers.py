@@ -35,7 +35,7 @@ def album_view(request, album_id, slide_id=1):
     photos = Photo.objects.filter(slide=slide)
     editable = album.owner == request.user
 
-    c = {"album" : album, "curr" : curr, "next" : next, "prev" : prev, "max" : maxSlide, "paginators" : paginators, "photos" : photos, "editable" : editable}
+    c = {"album" : album, "curr" : curr, "next" : next, "prev" : prev, "max" : maxSlide, "paginators" : paginators, "photos" : photos, "editable" : editable, "template": slide.template, "maxphoto": slide.maxphoto}
     c.update(csrf(request))
 
     return render_to_response("album.html", RequestContext(request, c))
