@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'photoalbum',
+	'social.apps.django_app.default',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -102,3 +103,26 @@ EMAIL_PORT = 587
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
+
+#Social configuration
+SOCIAL_AUTH_AUTHENTICATION_BACKENDS = (
+	'social.backends.facebook.FacebookAppOAuth2'
+)
+
+AUTHENTICATION_BACKENDS = (
+	'social.backends.facebook.FacebookOAuth2',
+	'django.contrib.auth.backends.ModelBackend',
+	'social.backends.google.GoogleOAuth2',
+)
+
+SOCIAL_AUTH_FACEBOOK_KEY = '1461694107375507'
+SOCIAL_AUTH_FACEBOOK_SECRET = 'a6161d36516d24600a4965310775bda3'
+
+SOCIAL_AUTH_GOOGLE_KEY = 'AIzaSyCZbjStQ1-0Lx0KBtKaRAlhjAuKW_rDUSA'
+SOCIAL_AUTH_GOOGLE_CLIENT_ID = '585540646570-oj5c755ait17qe64oqsrpbcl69i0qn2m.apps.googleusercontent.com'
+
+
+SOCIAL_AUTH_LOGIN_URL = '/login/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/albums/'
+
+
