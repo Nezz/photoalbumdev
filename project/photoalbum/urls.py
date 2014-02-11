@@ -6,6 +6,7 @@ urlpatterns = patterns('photoalbum.handlers',
     url(r'^login/$', 'user_handlers.loginHandler', name='login'),
     url(r'^register/$', 'user_handlers.registerHandler', name='register'),
     url(r'^logout/$', 'user_handlers.logoutHandler', name='logout'),
+    url(r'^userexist/$', 'user_handlers.userExist', name='checkuser'),
     # Album
     url(r'^albums/$', 'album_handlers.albumlistHandler', name='albumlist'),
     url(r'^albums/(?P<album_id>([0-9a-zA-Z])+)/$', 'album_handlers.albumitemHandler', name='albumitem'),
