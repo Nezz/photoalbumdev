@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 class Album(models.Model):
     name = models.CharField(max_length=255)
     guid = models.CharField(max_length=8, db_index=True)
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(User, blank=True, null=True)
 
     def __str__(self):
         return 'Album "%s" by %s (GUID: %s, ID: %s)' % (self.name, self.owner, self.guid, self.pk)

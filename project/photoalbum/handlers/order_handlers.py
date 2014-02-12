@@ -16,7 +16,11 @@ def neworderHandler(request, album_id):
     return rest_helper(None, neworderPost, request, album_id)
 
 def neworderPost(request, album_id):
-    return order_create_view(request, album_id)
+        if request.user.is_authenticated():
+            return order_create_view(request, album_id)
+        else:
+            return HttpResponseRedirect(reverse('login'))
+    
 
 """
  /orders/
@@ -29,7 +33,11 @@ def orderlistHandler(request):
     return rest_helper(orderlistGet, None, request)
 
 def orderlistGet(request):
-    return order_list_view(request)
+        if request.user.is_authenticated():
+            return order_list_view(request)
+        else:
+            return HttpResponseRedirect(reverse('login'))
+    
 
 """
  /orders/<Order ID>
@@ -40,9 +48,12 @@ def orderlistGet(request):
 		* Cancel order (owner only)
 """
 def orderitemHandler(request, order_id):
-    return rest_helper(orderitemGet, None, request, order_id)
+    return rest_helper(orderitemGet, orderitemPost, request, order_id)
 
 def orderitemGet(request, order_id):
+    raise Http404(); # TODO
+
+def orderitemPost(request, order_id):
     raise Http404(); # TODO
 
 """

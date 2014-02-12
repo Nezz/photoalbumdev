@@ -7,12 +7,18 @@
     {% for order in orders %}
     <div class="col-sm-6 col-md-3">
         <div class="thumbnail">
-            <img data-src="holder.js/100%x180/sky/text:{{order.album.name}}" alt="{{order.album.name}}">
+            
+            <a href="{% url 'orderitem' order_id=order.pk %}">
+                <img data-src="holder.js/100%x180/sky/text:{{order.album.name}}" alt="{{order.album.name}}">
+            </a>
+                   
             <div class="caption text-center">
                 {{order.time_placed}}
-                <form action="{% url 'orderitemdelete' order_id=order.pk %}" method="post">{% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </form>
+                <div class="row">
+                    <form action="{% url 'orderitemdelete' order_id=order.pk %}" method="post">{% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Cancel</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
