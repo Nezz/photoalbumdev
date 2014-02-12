@@ -28,10 +28,10 @@ class Slide(models.Model):
 class Photo(models.Model):
     link = models.URLField(max_length=255, blank=True)
     description = models.TextField(blank=True)
-    height = models.IntegerField(blank=True)
-    width = models.IntegerField(blank=True)
-    left = models.IntegerField(blank=True)
-    top = models.IntegerField(blank=True)
+    height = models.IntegerField(blank=True, default=100)
+    width = models.IntegerField(blank=True, default=100)
+    left = models.IntegerField(blank=True, default=0)
+    top = models.IntegerField(blank=True, default=0)
     slide = models.ForeignKey('Slide')
 
     def __str__(self):
