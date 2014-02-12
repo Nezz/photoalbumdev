@@ -6,6 +6,7 @@ urlpatterns = patterns('photoalbum.handlers',
     url(r'^login/$', 'user_handlers.loginHandler', name='login'),
     url(r'^register/$', 'user_handlers.registerHandler', name='register'),
     url(r'^logout/$', 'user_handlers.logoutHandler', name='logout'),
+    url(r'^userexist/$', 'user_handlers.userExist', name='checkuser'),
     # Album
     url(r'^albums/$', 'album_handlers.albumlistHandler', name='albumlist'),
     url(r'^albums/(?P<album_id>([0-9a-zA-Z])+)/$', 'album_handlers.albumitemHandler', name='albumitem'),
@@ -22,4 +23,6 @@ urlpatterns = patterns('photoalbum.handlers',
     url(r'^orders/$', 'order_handlers.orderlistHandler', name='orderlist'),
     url(r'^orders/(?P<order_id>([0-9])+)/$', 'order_handlers.orderitemHandler', name='orderitem'),
     url(r'^orders/(?P<order_id>([0-9])+)/delete$', 'order_handlers.orderitemdeleteHandler', name='orderitemdelete'),
+    #Social authentication
+    url(r'', include('social.apps.django_app.urls', namespace='social')),
 )

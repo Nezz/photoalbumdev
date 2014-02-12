@@ -5,36 +5,48 @@
 {% block styles %}  <link href="{% static 'albumtemplate' %}{{template}}.css" rel="stylesheet"> {% endblock %}
 {% block panelTitle %}
 
-	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+	<div class="collapse navbar-collapse">
 	    <ul class="nav navbar-nav">
-	   		<a href="#" class="editable" data-name="name" data-type="text" data-url="{% url 'albumitemmodify' album_id=album.guid %}">{{album.name}}</a>
+	   		{% if editable %} <a href="#" class="editable" data-name="name" data-type="text" data-url="{% url 'albumitemmodify' album_id=album.guid %}"> {% endif %}{{album.name}} {% if editable %}</a> {% endif %}
 	    </ul>
 	    <ul class="nav navbar-nav navbar-right">
-	    {% if photos|length < maxphoto %}
-	    	<button class="btn btn-success" onclick="addNewPhoto()"><span class="glyphicon glyphicon-plus icons-padding"></span> Add photo</button>
-	    {% endif %}
-    <a class="btn btn-primary" id="changealbumname" href="{% url 'albumitemmodify' album_id=album.guid %}" data-toggle="ajaxmodal"><span class="glyphicon glyphicon-edit icons-padding"></span> Change album name</a>
-    <div class="btn-group">
-        <a class="btn btn-default" href="{% url 'slideitemmodify' album_id=album.guid slide_id=curr %}" data-toggle="ajaxmodal"><span class="glyphicon glyphicon-th-large icons-padding"></span> Change template</a>
+	    {% if editable %}
+	    	<li><div class="g-plus" data-action="share" data-href="http://facebook.com" data-annotation="none" ></div></li>
+	    	<li><div class="fb-share-button" data-href="" data-type="button"></div></li>
+	    	<li><button class="btn btn-success" onclick="addNewPhoto()"><span class="glyphicon glyphicon-plus icons-padding"></span> Add photo</button></li>
+	   
+    <li><a class="btn btn-primary" id="changealbumname" href="{% url 'albumitemmodify' album_id=album.guid %}" data-toggle="ajaxmodal"><span class="glyphicon glyphicon-edit icons-padding"></span> Change album name</a></li>
+    <li><div class="btn-group">
         <button class="btn btn-success" onclick="submitForm('newslide')"><span class="glyphicon glyphicon-plus icons-padding"></span> New slide</button>
+         
         {% if prev or next %}
         <a class="btn btn-danger" href="{% url 'slideitemdelete' album_id=album.guid slide_id=curr %}" data-toggle="ajaxmodal" id="deletebutton"><span class="glyphicon glyphicon-remove icons-padding"></span> Delete slide</a>
         {% endif %}
-    </div>
+        {% endif %}
+    </div></li>
 	    </ul>
     </div>
 {% endblock %}
 
 <!-- Hide change album button if JavaScript is enabled (and X-Editor works) -->
-{% if editable %}
+
 {% block scripts %}
+<script type="text/javascript">
+  (function() {
+    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+  })();
+</script>
 <script>
+
+	function addNewPhoto() {
+		$("#newslideitem").submit();
+	}
+
     $(document).ready(function() {
     	console.log({{photos|length}}+" "+{{maxphoto}})
         $('#changealbumname').hide();
-        {% if editable %}
-        $(".modify").hide();
-       
          {% for photo in photos %}
          	$("#draggable"+{{forloop.counter}}).width({{photo.width}});
          	$("#draggable"+{{forloop.counter}}).height({{photo.height}});
@@ -43,14 +55,15 @@
          		'left': '{{photo.left}}px',
          		
          	});
-         	
+         {% endfor %}
+        
+        {% if editable %}
+        $(".modify").hide();
+        {% for photo in photos %}
          
          	$('#draggable'+{{forloop.counter}}).resizable({
          		handlers: 'n, s, e, w',
          		containment: $('#content'),
-//           		alsoResize: $("#draggableCaption"+{{forloop.counter}}),
-          		aspectRatio: true,
-          		maxWidth: '400px',
           		stop: function() {
           			$.ajax({
 					type: "POST",
@@ -122,7 +135,6 @@
     }
 </script>
 {% endblock %}
-{% endif %}
 
 {% block contentPanel %}
 {% if editable %}
@@ -143,7 +155,7 @@
 			
 			
 			 
-			 	{% if photo.link %} <img src="{{photo.link}}" alt="Photo" id="draggableImage{{forloop.counter}}"/> {% else %} a {% endif %}
+			 	{% if photo.link %} <img src="{{photo.link}}" alt="Photo" id="draggableImage{{forloop.counter}}"/> {% endif %}
 			 	<div class="caption text-center draggableCaption" id="draggableCaption{{forloop.counter}}">
 					<p>
 						{% if editable %}<a href="#" class="editable" data-name="description" data-type="text" data-url="{% url 'slideitemphotomodify' album_id=album.guid slide_id=curr photo_id=photo.pk %}">{% endif %}
@@ -162,25 +174,6 @@
 		</div>
 	{% endfor %}
 </div>
-            
-<!-- 
-<div class="row">
-    {% for photo in photos %}
-    <div class="col-sm-6 col-md-3">
-        <div class="thumbnail">
-            {% if editable %}<a href="{% url 'slideitemphotomodify' album_id=album.guid slide_id=curr photo_id=photo.pk %}" data-toggle="ajaxmodal">{% endif %}<img {% if photo.link %}src="{{photo.link}}"{% else %}data-src="holder.js/100%x180/social/text:No image"{% endif %} alt="Photo">{% if editable %}</a>{% endif %}
-            <div class="caption text-center">
-                <p>
-                    {% if editable %}<a href="#" class="editable" data-name="description" data-type="text" data-url="{% url 'slideitemphotomodify' album_id=album.guid slide_id=curr photo_id=photo.pk %}">{% endif %}
-                    {{photo.description}}
-                    {% if editable %}</a>{% endif %}
-                </p>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-</div>
- -->
 
 <div class="text-center">
     <div class="btn-group">

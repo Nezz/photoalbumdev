@@ -2,8 +2,41 @@
 {% load staticfiles %}
 {% block title %}Album {{album.name}}{% endblock %}
 {% block styles %}<link href="{% static 'bootstrap/dist/css/signin.css' %}" rel="stylesheet">{% endblock %}
+{% block scripts %}
+<script>
+$(document).ready(function(){
+	$('#error').hide();
+	$('#username').focusout( function() {
+		console.log("Hello")
+		$.ajax({
+			type: "POST",
+			url:"{% url 'checkuser' %}",
+			data: { 
+				'username': $('#username').val(),
+				'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val(),
+			},
+			success: function(data){            
+				$('#error').hide();
+			},
+			error: function(){
+				$('#error').show();
+			},
+		});
+		
+	});
+	
+	$('#username').focusin( function() {
+		
+	});
+  
+});
+	
+</script>
+{% endblock %}
+
 {% block content %}
-<form class="form-signin" role="form" action="/register/" method="post">{% csrf_token %}
+<div id="error"> Username exists!</div>
+<form class="form-signin" role="form" action='/register/' method='post'>{% csrf_token %}
 <h2 class="form-signin-heading">Please register</h2>
 <input type="text" class="form-control" placeholder="Username" id="username" name="username" required autofocus>
 <input type="text" class="form-control" placeholder="Email" id="email" name="email" required>
