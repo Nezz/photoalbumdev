@@ -6,17 +6,29 @@
         <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
         <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css" rel="stylesheet">
         <link href="{% static 'bootstrap3-editable/css/bootstrap-editable.css' %}" rel="stylesheet"/>
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
         {% block styles %}{% endblock %}
     </head>
 	<body>
+		<div id="fb-root"></div>
+		<script>(function(d, s, id) {
+		  var js, fjs = d.getElementsByTagName(s)[0];
+		  if (d.getElementById(id)) return;
+		  js = d.createElement(s); js.id = id;
+		  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=1461694107375507";
+		  fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));</script>
 		<script src="https://code.jquery.com/jquery.js"></script>
 	    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
 	    <script src="{% static 'bootstrap3-editable/js/bootstrap-editable.min.js' %}"></script>
+  		<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+	    <script src="{% static 'ow.widgets.persistState.js' %}"></script>
 	    <script src="{% static 'holder/holder.js' %}"></script>
         <script src="{% static 'helpers.js' %}"></script>
         {% block scripts %} {% endblock %}
         <div class="container">
             {% include "navbar.html" %}
+            
 	        {% block content %}{% endblock %}
 	    </div>
     </body>

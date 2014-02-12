@@ -333,11 +333,54 @@ class album_tests(TestCase):
 	    * POST: N/A
     """
     def test_photoGet(self):
-        response = self.client.get('/albums/albumone/1/1')
+        response = self.client.get('/albums/albumone/1/1/')
         self.assertEquals(response.status_code, 302, "Testing request status code")
 
-        response = self.client.get('/albums/albumtwo/2/1')
+        response = self.client.get('/albums/albumtwo/2/1/')
         self.assertEquals(response.status_code, 404, "Testing request status code")
+
+    """
+         /albums/<Album ID>/<Slide ID>/<Photo ID>/delete
+        * GET:
+            * Owner login: Are you sure you want to delete?
+            * No login: Login page 
+        * POST: Delete photo (Owner only)
+    """
+    def test_photoDeleteGetNoLogin(self):
+        response = self.client.get('/albums/albumone/1/1/delete', follow=True)
+        self.assertEquals(response.status_code, 200, "Testing request status code")
+        self.assertTemplateUsed(response, "login.html", "Testing that the right template was rendered")
+
+    def test_photoDeleteGetOwner(self):
+        self.client.login(username='admin', password='admin')
+        response = self.client.get('/albums/albumone/1/1/delete', follow=True)
+        self.assertEquals(response.status_code, 200, "Testing request status code")
+        self.assertTemplateUsed(response, "photo_delete.html", "Testing that the right template was rendered")
+
+    def test_photoDeleteGetNonowner(self):
+        self.client.login(username='admin2', password='admin2')
+        response = self.client.get('/albums/albumone/1/1/delete', follow=True)
+        self.assertEquals(response.status_code, 403, "Testing request status code")
+
+    def test_photoDeletePostNoLogin(self):
+        response = self.client.post('/albums/albumone/1/1/delete', follow=True)
+        self.assertEquals(response.status_code, 403, "Testing request status code")
+
+    def test_photoDeletePostOwner(self):
+        self.client.login(username='admin', password='admin')
+        response = self.client.post('/albums/albumone/1/1/delete', follow=True)
+        self.assertEquals(response.status_code, 200, "Testing request status code")
+        self.assertTemplateUsed(response, "album.html", "Testing that the right template was rendered")
+
+        response = self.client.get('/albums/albumone/1/1/', follow=True)
+        self.assertEquals(response.status_code, 404, "Testing request status code")
+        response = self.client.get('/albums/albumone/1/2/')
+        self.assertEquals(response.status_code, 302, "Testing request status code")
+
+    def test_photoDeletePostNonowner(self):
+        self.client.login(username='admin2', password='admin2')
+        response = self.client.post('/albums/albumone/1/1/delete', follow=True)
+        self.assertEquals(response.status_code, 403, "Testing request status code")
 
     """
      /albums/<Album ID>/<Slide ID>/<Photo ID>/modify

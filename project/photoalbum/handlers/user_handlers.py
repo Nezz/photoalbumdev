@@ -89,6 +89,14 @@ def registerPost(request):
     msg.attach_alternative(html_content, "text/html")
     msg.send()
     return HttpResponseRedirect(reverse('login'))
+    
+def userExist(request):
+	username = request.POST['username']
+	
+	if User.objects.filter(username=username).exists():
+		return HttpResponseBadRequest()
+	else:
+		return HttpResponse('OK')
 
 """
  /logout/

@@ -2,8 +2,9 @@ from django.http import HttpResponse, Http404, HttpResponseForbidden, HttpRespon
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.shortcuts import get_object_or_404
 from django.template import Context
-from photoalbum.utils import rest_helper, get_or_none
+from photoalbum.utils import rest_helper
 from photoalbum.renderers.order_renderers import *
 
 """
@@ -55,11 +56,8 @@ def orderitemdeleteHandler(request, order_id):
 
 def orderitemdeletePost(request, order_id):
     if request.user.is_authenticated:
-        order = get_or_none(Order, pk=order_id)
-        if order != None:
-            order.delete()
-            return order_list_view(request)
-        else:
-            raise Http404()
+        order = get_object_or_404(Order, pk=order_id)
+        order.delete()
+        return order_list_view(request)
     else:
         return HttpResponseRedirect(reverse('login'))

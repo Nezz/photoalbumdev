@@ -20,12 +20,6 @@ def rest_helper(getResponse, postResponse, request, *extraArgs):
         else:
             return HttpResponseNotAllowed(['GET'])
 
-def get_or_none(model, **kwargs):
-    try:
-        return model.objects.get(**kwargs)
-    except model.DoesNotExist:
-        return None
-
 def get_slide_or_404(album, slide_id):
     slide_id = int(slide_id)
     if len(album.get_slide_order()) < slide_id:

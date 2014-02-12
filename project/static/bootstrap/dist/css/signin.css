@@ -1,6 +1,4 @@
 body {
-  padding-top: 40px;
-  padding-bottom: 40px;
   background-color: #eee;
 }
 
@@ -39,5 +37,10 @@ body {
 }
 
 .form-signin .last input[type="password"] {
-  margin-bottom: 10px;
+   border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+#submit {
+	margin-top: 20px;
 }
