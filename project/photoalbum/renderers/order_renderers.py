@@ -22,10 +22,7 @@ def order_list_view(request):
 #    return render_to_response("order.html", RequestContext(request, c))
 
 def order_create_view(request, album_id):
-
-
     album_original = Album.objects.get(guid=album_id)
-
     #how to generate a new pk which is proven to be non existant?
     pk_new = album_original.pk 
     exists = True

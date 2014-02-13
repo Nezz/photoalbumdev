@@ -83,7 +83,9 @@ def orderitemdeleteHandler(request, order_id):
 def orderitemdeletePost(request, order_id):
     if request.user.is_authenticated:
         order = get_object_or_404(Order, pk=order_id)
+        album = get_object_or_404(Album, guid=order.album.guid)
         order.delete()
+        album.delete()
         return order_list_view(request)
     else:
         return HttpResponseRedirect(reverse('login'))
