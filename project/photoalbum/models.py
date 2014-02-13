@@ -42,7 +42,7 @@ class Photo(models.Model):
 
 class Order(models.Model):
     time_placed = models.TimeField()
-    statusCode = models.IntegerField(default=0) # 0: Waiting for payment; 1: Payment failed; 2: Paid
+    payment_ref = models.IntegerField(null=True)
     album = models.ForeignKey('Album')
     owner = models.ForeignKey(User)
 

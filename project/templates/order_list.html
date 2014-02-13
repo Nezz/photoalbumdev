@@ -7,7 +7,7 @@
     {% if orders|length < 1 %}
     <div class="col-sm-6 col-md-3">
         <div class="thumbnail">
-            <img data-src="holder.js/100%x180/lava/text:No orders found" alt="No orders found">         
+            <img data-src="holder.js/100%x180/vine/text:No orders found" alt="No orders found">         
         </div>
     </div>
     {% endif %}
@@ -15,10 +15,10 @@
     <div class="col-sm-6 col-md-3">
         <div class="thumbnail">
             <a href="{% url 'orderitem' order_id=order.pk %}">
-                <img data-src="holder.js/100%x180/lava/text:Order #{{order.pk}}" alt="{{order.album.name}}">
+                <img data-src="holder.js/100%x180/{{order.payment_ref|yesno:"vine,lava"}}/text:Order #{{order.pk}}" alt="{{order.album.name}}">
             </a>     
             <div class="caption text-center">
-                Status: {{order.statusCode}}
+                {{order.payment_ref|yesno:"Processing order,Waiting for payment"}}
             </div>
         </div>
     </div>

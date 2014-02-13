@@ -69,7 +69,10 @@ def orderitemHandler(request, order_id):
 def orderitemGet(request, order_id):
     order = get_object_or_404(Order, pk=order_id)
     if order.owner == request.user:
-        return orderitem_view(request, order)
+        if 'status' in request.GET:
+            return orderitem_view(request, order, request.GET['status'])
+        else:
+            return orderitem_view(request, order, None)
     elif not request.user.is_authenticated():
         return HttpResponseRedirect(reverse('login'))
     else:
@@ -120,9 +123,13 @@ def paymentsuccessHandler(request):
 def paymentsuccessGet(request):
     if 'pid' in request.GET and 'ref' in request.GET and 'checksum' in request.GET:
         if validate_payment(request.GET['pid'], request.GET['ref'], request.GET['checksum']):
-            return HttpResponseRedirect(reverse('orderitem', kwargs={'order_id' : request.GET['pid']}))
+            order = get_object_or_404(Order, pk=request.GET['pid'])
+            order.payment_ref = request.GET['ref']
+            order.save()
+
+            return HttpResponseRedirect(reverse('orderitem', kwargs={'order_id' : request.GET['pid']}) + '?status=success')
         else:
-            raise Http404;
+            return HttpResponseRedirect(reverse('orderitem', kwargs={'order_id' : request.GET['pid']}) + '?status=fail')
     else:
         return HttpResponseBadRequest()
 
@@ -131,7 +138,10 @@ def paymentcancelHandler(request):
 
 def paymenterrorGet(request):
     if 'pid' in request.GET and 'ref' in request.GET and 'checksum' in request.GET:
-        raise Http404 # TODO
+        if validate_payment(request.GET['pid'], request.GET['ref'], request.GET['checksum']):
+            return HttpResponseRedirect(reverse('orderitem', kwargs={'order_id' : request.GET['pid']}) + '?status=error')
+        else:
+            return HttpResponseRedirect(reverse('orderitem', kwargs={'order_id' : request.GET['pid']}) + '?status=fail')
     else:
         return HttpResponseBadRequest()
 
@@ -140,7 +150,11 @@ def paymenterrorHandler(request):
 
 def paymentcancelGet(request):
     if 'pid' in request.GET and 'ref' in request.GET and 'checksum' in request.GET:
-        raise Http404 # TODO
+        if validate_payment(request.GET['pid'], request.GET['ref'], request.GET['checksum']):
+            return HttpResponseRedirect(reverse('orderitem', kwargs={'order_id' : request.GET['pid']}) + '?status=cancel')
+        else:
+            return HttpResponseRedirect(reverse('orderitem', kwargs={'order_id' : request.GET['pid']}) + '?status=fail')
     else:
         return HttpResponseBadRequest()
+
 

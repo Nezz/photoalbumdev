@@ -3,10 +3,17 @@
 {% block panelTitle %}Order #{{order.pk}}{% endblock %}
 {% block contentPanel %}
 {{order.time_placed}}
-{{order.statusCode}}
-<a class="btn btn-danger" href="{% url 'orderitemdelete' order_id=order.pk %}" data-toggle="ajaxmodal"><span class="glyphicon glyphicon-remove icons-padding"></span> Delete order</a>
 
-{% if order.statusCode < 2 %}
+{% if message %}
+<p>{{message}}</p>
+{% elif order.payment_ref %}
+<p>This order has been paid. It will be shipped to you soon.</p>
+{% else %}
+<p>Your haven't paid for your order yet. It will not be shipped until the payment has been completed.</p>
+{% endif %}
+{% if not order.payment_ref %}
+<a class="btn btn-danger" href="{% url 'orderitemdelete' order_id=order.pk %}" data-toggle="ajaxmodal"><span class="glyphicon glyphicon-remove icons-padding"></span> Cancel order</a>
+
 <form action="http://payments.webcourse.niksula.hut.fi/pay/" method="POST">
     <input type="hidden" name="pid" value="{{order.id}}" />
     <input type="hidden" name="sid" value="vladimirorekhov" />
@@ -20,7 +27,7 @@
            value="{{checksum}}" />
 
     <input type="hidden" name="amount" value="10"/>
-    <input type="submit" class="btn btn-success" value="Pay"/>
+    <input type="submit" class="btn btn-success" value="Pay for this order"/>
 </form>
 {% endif %}
 {% endblock %}
