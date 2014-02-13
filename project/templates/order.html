@@ -1,2 +1,29 @@
 {% extends "base_panel.html" %}
-{% load staticfiles %}
+{% block title %}Order #{{order.pk}}{% endblock %}
+{% block panelTitle %}Order #{{order.pk}}{% endblock %}
+{% block contentPanel %}
+{{order.time_placed}}
+{{order.statusCode}}
+<a class="btn btn-danger" href="{% url 'orderitemdelete' order_id=order.pk %}" data-toggle="ajaxmodal"><span class="glyphicon glyphicon-remove icons-padding"></span> Delete order</a>
+
+        #test code
+        <!--<button class="btn btn-success" onclick="submitForm('order{{album.guid}}')"><span class="glyphicon glyphicon-shopping-cart icons-padding"></span> Order</button>
+        <form action="{% url 'ordernew' album_id=album.guid %}" method="post" id="order{{album.guid}}">{% csrf_token %}-->
+        
+        <!--Actual code. Think about pid, replace localhost with real address -->
+        <form action="http://payments.webcourse.niksula.hut.fi/pay/" method="POST">
+                    <input type="hidden" name="pid" value="{{album.guid}}" />
+                    <input type="hidden" name="sid" value="vladimirorekhov" />
+                    <input type="hidden" name="success_url" 
+                            value="http://localhost:8000/albums/{{album.guid}}/order" />
+                    <input type="hidden" name="cancel_url" 
+                            value="http://localhost:8000/albums/{{album.guid}}/ordercancel" />
+                    <input type="hidden" name="error_url" 
+                            value="http://localhost:8000/albums/{{album.guid}}/ordercancel" />
+                    <input type="hidden" name="checksum" 
+                            value="{{checksum}}" />
+
+                    <input type="hidden" id="id_amount" name="amount" value="10"/>
+                    <input type="submit" class="btn btn-success" value="Order album"/>
+       </form>
+{% endblock %}

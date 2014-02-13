@@ -5,7 +5,7 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <Name>project</Name>
     <RootNamespace>project</RootNamespace>
-    <InterpreterId>{5298dc95-421c-41da-aa4b-7e33c53ebc61}</InterpreterId>
+    <InterpreterId>{1040caab-89d0-410c-b14c-a62f148130a2}</InterpreterId>
     <InterpreterVersion>2.7</InterpreterVersion>
   </PropertyGroup>
   <PropertyGroup>
@@ -56,8 +56,10 @@
     <Folder Include="photoalbum\" />
     <Folder Include="photoalbum\handlers\" />
     <Folder Include="photoalbum\renderers\" />
+    <Folder Include="photoalbum\templatetags\" />
     <Folder Include="photoalbum\tests\" />
     <Folder Include="project\" />
+    <Folder Include="static\" />
     <Folder Include="templates\" />
   </ItemGroup>
   <ItemGroup>
@@ -83,6 +85,8 @@
     </Interpreter>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="templates\order_delete.html" />
+    <Content Include="templates\order_new.html" />
     <Content Include="templates\order_list.html" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Python Tools\Microsoft.PythonTools.Django.targets" />

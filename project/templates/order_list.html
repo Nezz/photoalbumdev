@@ -4,21 +4,21 @@
 {% block contentPanel %}
 
 <div class="row">
+    {% if orders|length < 1 %}
+    <div class="col-sm-6 col-md-3">
+        <div class="thumbnail">
+            <img data-src="holder.js/100%x180/lava/text:No orders found" alt="No orders found">         
+        </div>
+    </div>
+    {% endif %}
     {% for order in orders %}
     <div class="col-sm-6 col-md-3">
         <div class="thumbnail">
-            
             <a href="{% url 'orderitem' order_id=order.pk %}">
-                <img data-src="holder.js/100%x180/sky/text:{{order.album.name}}" alt="{{order.album.name}}">
-            </a>
-                   
+                <img data-src="holder.js/100%x180/lava/text:Order #{{order.pk}}" alt="{{order.album.name}}">
+            </a>     
             <div class="caption text-center">
-                {{order.time_placed}}
-                <div class="row">
-                    <form action="{% url 'orderitemdelete' order_id=order.pk %}" method="post">{% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Cancel</button>
-                    </form>
-                </div>
+                Status: {{order.statusCode}}
             </div>
         </div>
     </div>

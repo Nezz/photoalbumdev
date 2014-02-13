@@ -1,0 +1,20 @@
+{% extends request.is_ajax|yesno:"base_ajax.html,base.html" %}
+{% block content %}
+<div class="modal-header">
+    <h3>New order</h3>
+</div>
+
+<div class="modal-body">
+    <p>You are ordering the album "{{ album.name }}"</p>
+    <input type="text" class="form-control" placeholder="testinput" id="test">
+</div>
+
+<div class="modal-footer">
+    <a href="{% if request.is_ajax %}#{% else %}{% url 'albumitem' album_id=album.guid %}{% endif %}" class="btn" data-dismiss="modal">Cancel</a>
+    <a href="#" class="btn btn-primary" data-dismiss="modal" onclick="submitForm('order{{album.guid}}', { '#test' : $('#testinput').val() })">Create order</a>
+</div>
+
+<form role="form" action="{% url 'ordernew' album_id=album.guid %}" method="post" id="order{{album.guid}}">{% csrf_token %}
+    <input type="hidden" name="testname" id="test"/>
+</form>
+{% endblock %}

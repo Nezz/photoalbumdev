@@ -28,10 +28,10 @@ class Slide(models.Model):
 class Photo(models.Model):
     link = models.URLField(max_length=255, blank=True)
     description = models.TextField(blank=True)
-    height = models.IntegerField(blank=True, default=100)
-    width = models.IntegerField(blank=True, default=100)
-    left = models.IntegerField(blank=True, default=0)
-    top = models.IntegerField(blank=True, default=0)
+    height = models.IntegerField(default=100)
+    width = models.IntegerField(default=100)
+    left = models.IntegerField(default=0)
+    top = models.IntegerField(default=0)
     slide = models.ForeignKey('Slide')
 
     def __str__(self):
@@ -42,6 +42,7 @@ class Photo(models.Model):
 
 class Order(models.Model):
     time_placed = models.TimeField()
+    statusCode = models.IntegerField(default=0) # 0: Waiting for payment; 1: Payment failed; 2: Paid
     album = models.ForeignKey('Album')
     owner = models.ForeignKey(User)
 
