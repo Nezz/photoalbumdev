@@ -14,6 +14,13 @@ def order_list_view(request):
     c.update(csrf(request))
     return render_to_response("order_list.html", RequestContext(request, c))
 
+
+#def order_view(request):
+#    order = Order.objects.filter(pk=request.order_id)
+#    c = {"order": order}
+#    c.update(csrf(request))
+#    return render_to_response("order.html", RequestContext(request, c))
+
 def order_create_view(request, album_id):
 
 

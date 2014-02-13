@@ -23,6 +23,7 @@ urlpatterns = patterns('photoalbum.handlers',
     url(r'^albums/(?P<album_id>([0-9a-zA-Z])+)/ordercancel$', 'order_handlers.order_cancel_or_errorHandler', name='cancelorder'),
     url(r'^orders/$', 'order_handlers.orderlistHandler', name='orderlist'),
     url(r'^orders/(?P<order_id>([0-9])+)/$', 'order_handlers.orderitemHandler', name='orderitem'),
+
     url(r'^orders/(?P<order_id>([0-9])+)/delete$', 'order_handlers.orderitemdeleteHandler', name='orderitemdelete'),
     #Social authentication
     #url(r'', include('social.apps.django_app.urls', namespace='social')),

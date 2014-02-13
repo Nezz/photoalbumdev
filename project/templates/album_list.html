@@ -11,7 +11,9 @@
                 <!-- <button class="btn btn-success" onclick="submitForm('order{{album.guid}}')"><span class="glyphicon glyphicon-shopping-cart icons-padding"></span> Order</button>-->
                 <a class="btn btn-danger" href="{% url 'albumitemdelete' album_id=album.guid %}" data-toggle="ajaxmodal"><span class="glyphicon glyphicon-remove icons-padding"></span> Delete</a>
                 
+                <!-- Can't make it here because we can't calculate checksum for a particular album -->
                 <!--<form action="{% url 'neworder' album_id=album.guid %}" method="post" id="order{{album.guid}}">{% csrf_token %}</form>-->
+                
             </div>
         </div>
     </div>

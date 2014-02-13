@@ -16,7 +16,9 @@
 	    	<li><button class="btn btn-success" onclick="addNewPhoto()"><span class="glyphicon glyphicon-plus icons-padding"></span> Add photo</button></li>
 	   
      <li>
-        <!--Think about pid, replace localhost with real address-->
+        <button class="btn btn-success" onclick="submitForm('order{{album.guid}}')"><span class="glyphicon glyphicon-shopping-cart icons-padding"></span> Order</button>
+        <form action="{% url 'neworder' album_id=album.guid %}" method="post" id="order{{album.guid}}">{% csrf_token %}
+        <!--Think about pid, replace localhost with real address
         <form action="http://payments.webcourse.niksula.hut.fi/pay/" method="POST">
                     <input type="hidden" name="pid" value="{{album.guid}}" />
                     <input type="hidden" name="sid" value="vladimirorekhov" />
@@ -29,10 +31,10 @@
                     <input type="hidden" name="checksum" 
                             value="{{checksum}}" />
 
-                    <label for="id_amount">Amount</label> 
-                    <input type="text" id="id_amount" name="amount" value="10" readonly/>
-                    <input type="submit" value="Accept Payment"/>
+                    <input type="hidden" id="id_amount" name="amount" value="10"/>
+                    <input type="submit" class="btn btn-success" value="Order album"/>
        </form>
+        -->
     </li>
     <li><a class="btn btn-primary" id="changealbumname" href="{% url 'albumitemmodify' album_id=album.guid %}" data-toggle="ajaxmodal"><span class="glyphicon glyphicon-edit icons-padding"></span> Change album name</a></li>
     <li><div class="btn-group">

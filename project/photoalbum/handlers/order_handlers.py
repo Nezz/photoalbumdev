@@ -61,7 +61,12 @@ def orderitemHandler(request, order_id):
     return rest_helper(orderitemGet, orderitemPost, request, order_id)
 
 def orderitemGet(request, order_id):
-    raise Http404(); # TODO
+    if request.user.is_authenticated:
+        order = get_object_or_404(Order, pk=order_id)
+        c = {"order": order}
+        return render_to_response("order.html", RequestContext(request, c))
+    else:
+        return HttpResponseRedirect(reverse('login'))
 
 def orderitemPost(request, order_id):
     raise Http404(); # TODO
