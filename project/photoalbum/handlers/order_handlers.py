@@ -33,7 +33,15 @@ def ordernewPost(request, album_id):
         album.guid = ""
         album.save() # Copy album
 
-        order = Order.objects.create(owner=request.user, album=album, time_placed=datetime.datetime.now()) # TODO: Order params (name, address, etc)
+        order = Order.objects.create(owner=request.user,
+                                     album=album,
+                                     time_placed=datetime.datetime.now(),
+                                     details_name=request.POST['name'],
+                                     details_zip=request.POST['zip'],
+                                     details_city=request.POST['city'],
+                                     details_address=request.POST['address'],
+                                     details_country=request.POST['country'],
+                                     details_phone=request.POST['phone'])
 
         return HttpResponseRedirect(reverse('orderitem', kwargs={'order_id' : order.pk}))
     else:

@@ -42,6 +42,12 @@ class Photo(models.Model):
 
 class Order(models.Model):
     time_placed = models.TimeField()
+    details_name = models.CharField(blank=True, max_length=255, default="")
+    details_zip = models.CharField(blank=True, max_length=8, default="")
+    details_city = models.CharField(blank=True, max_length=255, default="")
+    details_address = models.CharField(blank=True, max_length=255, default="")
+    details_country = models.CharField(blank=True, max_length=255, default="")
+    details_phone = models.CharField(blank=True, max_length=255, default="")
     payment_ref = models.IntegerField(null=True)
     album = models.ForeignKey('Album')
     owner = models.ForeignKey(User)

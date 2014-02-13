@@ -2,8 +2,10 @@
 {% block title %}Order #{{order.pk}}{% endblock %}
 {% block panelTitle %}Order #{{order.pk}}{% endblock %}
 {% block contentPanel %}
-{{order.time_placed}}
-
+<h3>Details</h3>
+<p>Name: {{order.details_name}}</p>
+<p>Address: {{order.zip}} {{order.city}} {{order.address}}, {{order.country}}</p>
+<p>Phone: {{order.phone}}</p>
 {% if message %}
 <p>{{message}}</p>
 {% elif order.payment_ref %}

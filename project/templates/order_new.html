@@ -6,15 +6,25 @@
 
 <div class="modal-body">
     <p>You are ordering the album "{{ album.name }}"</p>
-    <input type="text" class="form-control" placeholder="testinput" id="test">
+    <input type="text" class="form-control" placeholder="Name" id="nameinput" required autofocus>
+    <input type="text" class="form-control" placeholder="ZIP" id="zipinput" required>
+    <input type="text" class="form-control" placeholder="City" id="cityinput" required>
+    <input type="text" class="form-control" placeholder="Address" id="addressinput" required>
+    <input type="text" class="form-control" placeholder="Country" id="countryinput" required>
+    <input type="text" class="form-control" placeholder="Phone" id="phoneinput" required>
 </div>
 
 <div class="modal-footer">
     <a href="{% if request.is_ajax %}#{% else %}{% url 'albumitem' album_id=album.guid %}{% endif %}" class="btn" data-dismiss="modal">Cancel</a>
-    <a href="#" class="btn btn-primary" data-dismiss="modal" onclick="submitForm('order{{album.guid}}', { '#test' : $('#testinput').val() })">Create order</a>
+    <a href="#" class="btn btn-primary" data-dismiss="modal" onclick="submitForm('order{{album.guid}}', { '#name' : $('#nameinput').val(), '#zip' : $('#zipinput').val(), '#city' : $('#cityinput').val(), '#address' : $('#addressinput').val(), '#country' : $('#countryinput').val(), '#phone' : $('#phoneinput').val() })">Create order</a>
 </div>
 
 <form role="form" action="{% url 'ordernew' album_id=album.guid %}" method="post" id="order{{album.guid}}">{% csrf_token %}
-    <input type="hidden" name="testname" id="test"/>
+    <input type="hidden" name="name" id="name"/>
+    <input type="hidden" name="zip" id="zip"/>
+    <input type="hidden" name="city" id="city"/>
+    <input type="hidden" name="address" id="address"/>
+    <input type="hidden" name="country" id="country"/>
+    <input type="hidden" name="phone" id="phone"/>
 </form>
 {% endblock %}

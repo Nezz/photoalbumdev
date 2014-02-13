@@ -31,7 +31,6 @@ def orderitem_view(request, order, paymentStatus):
     c = {"order" : order, "message" : message}
     c.update(csrf(request))
 
-    #checksum - for the payment
     if (order.payment_ref is None):
         checksum = get_payment_checksum(order.pk)
         c.update({"checksum" : checksum})
