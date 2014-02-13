@@ -1,4 +1,4 @@
-from django.http import HttpResponse, Http404, HttpResponseForbidden, HttpResponseRedirect
+from django.http import HttpResponse, Http404, HttpResponseForbidden, HttpResponseRedirect, HttpResponseBadRequest
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -113,3 +113,31 @@ def orderitemdeletePost(request, order_id):
         return HttpResponseRedirect(reverse('login'))
     else:
         return HttpResponseForbidden()
+
+def paymentsuccessHandler(request):
+    return rest_helper(paymentsuccessGet, None, request)
+
+def paymentsuccessGet(request):
+    if 'pid' in request.GET and 'ref' in request.GET and 'checksum' in request.GET:
+        raise Http404 # TODO
+    else:
+        return HttpResponseBadRequest()
+
+def paymentcancelHandler(request):
+    return rest_helper(paymenterrorGet, None, request)
+
+def paymenterrorGet(request):
+    if 'pid' in request.GET and 'ref' in request.GET and 'checksum' in request.GET:
+        raise Http404 # TODO
+    else:
+        return HttpResponseBadRequest()
+
+def paymenterrorHandler(request):
+    return rest_helper(paymentcancelGet, None, request)
+
+def paymentcancelGet(request):
+    if 'pid' in request.GET and 'ref' in request.GET and 'checksum' in request.GET:
+        raise Http404 # TODO
+    else:
+        return HttpResponseBadRequest()
+
