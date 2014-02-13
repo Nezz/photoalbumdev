@@ -5,9 +5,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.template import RequestContext
 from photoalbum.models import Album, Slide, Photo
 from photoalbum.utils import get_slide_or_404
+import md5
 
 def album_list_view(request):
     albums = Album.objects.filter(owner=request.user)
+
     c = {"albums": albums}
     c.update(csrf(request))
     return render_to_response("album_list.html", RequestContext(request, c))
@@ -35,7 +37,12 @@ def album_view(request, album_id, slide_id=1):
     photos = Photo.objects.filter(slide=slide)
     editable = album.owner == request.user
 
-    c = {"album" : album, "curr" : curr, "next" : next, "prev" : prev, "max" : maxSlide, "paginators" : paginators, "photos" : photos, "editable" : editable, "template": slide.template, "maxphoto": slide.maxphoto}
+    #checksum - for the payment
+    checksum_str = "pid=%s&sid=%s&amount=%s&token=%s"%(album.guid, "vladimirorekhov", 10, "1fff5d006fb58357dfac5f24c8c6e2b7")
+    m = md5.new(checksum_str)
+    checksum = m.hexdigest()
+
+    c = {"album" : album, "curr" : curr, "next" : next, "prev" : prev, "max" : maxSlide, "paginators" : paginators, "photos" : photos, "editable" : editable, "template": slide.template, "maxphoto": slide.maxphoto, "checksum": checksum}
     c.update(csrf(request))
 
     return render_to_response("album.html", RequestContext(request, c))

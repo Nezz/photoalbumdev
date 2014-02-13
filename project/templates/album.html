@@ -15,6 +15,25 @@
 	    	<li><div class="fb-share-button" data-href="" data-type="button"></div></li>
 	    	<li><button class="btn btn-success" onclick="addNewPhoto()"><span class="glyphicon glyphicon-plus icons-padding"></span> Add photo</button></li>
 	   
+     <li>
+        <!--Think about pid, replace localhost with real address-->
+        <form action="http://payments.webcourse.niksula.hut.fi/pay/" method="POST">
+                    <input type="hidden" name="pid" value="{{album.guid}}" />
+                    <input type="hidden" name="sid" value="vladimirorekhov" />
+                    <input type="hidden" name="success_url" 
+                            value="http://localhost:8000/albums/{{album.guid}}/order" />
+                    <input type="hidden" name="cancel_url" 
+                            value="http://localhost:8000/albums/{{album.guid}}/ordercancel" />
+                    <input type="hidden" name="error_url" 
+                            value="http://localhost:8000/albums/{{album.guid}}/ordercancel" />
+                    <input type="hidden" name="checksum" 
+                            value="{{checksum}}" />
+
+                    <label for="id_amount">Amount</label> 
+                    <input type="text" id="id_amount" name="amount" value="10" readonly/>
+                    <input type="submit" value="Accept Payment"/>
+       </form>
+    </li>
     <li><a class="btn btn-primary" id="changealbumname" href="{% url 'albumitemmodify' album_id=album.guid %}" data-toggle="ajaxmodal"><span class="glyphicon glyphicon-edit icons-padding"></span> Change album name</a></li>
     <li><div class="btn-group">
         <button class="btn btn-success" onclick="submitForm('newslide')"><span class="glyphicon glyphicon-plus icons-padding"></span> New slide</button>

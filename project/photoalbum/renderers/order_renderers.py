@@ -15,6 +15,8 @@ def order_list_view(request):
     return render_to_response("order_list.html", RequestContext(request, c))
 
 def order_create_view(request, album_id):
+
+
     album_original = Album.objects.get(guid=album_id)
 
     #how to generate a new pk which is proven to be non existant?
@@ -31,7 +33,7 @@ def order_create_view(request, album_id):
             pk_new += 1
 
     album_original.pk = pk_new
-    album_original.name="TEMP"
+    album_original.name += " order copy"
     album_original.owner = None
 
     guid = ''.join(random.choice(string.ascii_lowercase + string.digits) for x in range(8))

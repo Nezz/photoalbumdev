@@ -37,6 +37,16 @@ def orderlistGet(request):
             return order_list_view(request)
         else:
             return HttpResponseRedirect(reverse('login'))
+
+#for the payment service
+def order_cancel_or_errorHandler(request):
+    return rest_helper(None, order_cancel_or_errorPost, request)
+
+def order_cancel_or_errorPost(request):
+        if request.user.is_authenticated():
+            return order_list_view(request)
+        else:
+            return HttpResponseRedirect(reverse('login'))
     
 
 """
