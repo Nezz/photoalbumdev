@@ -4,8 +4,9 @@
 {% block contentPanel %}
 <h3>Details</h3>
 <p>Name: {{order.details_name}}</p>
-<p>Address: {{order.zip}} {{order.city}} {{order.address}}, {{order.country}}</p>
-<p>Phone: {{order.phone}}</p>
+<p>Address: {{order.details_zip}} {{order.details_city}} {{order.details_address}}, {{order.details_country}}</p>
+<p>Phone: {{order.details_phone}}</p>
+<p>Order placed on {{order.time_placed}}</p>
 {% if message %}
 <p>{{message}}</p>
 {% elif order.payment_ref %}

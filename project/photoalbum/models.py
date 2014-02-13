@@ -41,7 +41,7 @@ class Photo(models.Model):
         order_with_respect_to = 'slide'
 
 class Order(models.Model):
-    time_placed = models.TimeField()
+    time_placed = models.DateTimeField()
     details_name = models.CharField(blank=True, max_length=255, default="")
     details_zip = models.CharField(blank=True, max_length=8, default="")
     details_city = models.CharField(blank=True, max_length=255, default="")
