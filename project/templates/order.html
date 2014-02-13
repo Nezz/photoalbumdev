@@ -11,11 +11,11 @@
     <input type="hidden" name="pid" value="{{order.id}}" />
     <input type="hidden" name="sid" value="vladimirorekhov" />
     <input type="hidden" name="success_url" 
-           value="{{ request.get_host }}{% url 'paymentsuccess' %}" />
+           value="http://{{ request.get_host }}{% url 'paymentsuccess' %}" />
     <input type="hidden" name="cancel_url" 
-           value="{{ request.get_host }}{% url 'paymentcancel' %}" />
+           value="http://{{ request.get_host }}{% url 'paymentcancel' %}" />
     <input type="hidden" name="error_url" 
-           value="{{ request.get_host }}{% url 'paymenterror' %}" />
+           value="http://{{ request.get_host }}{% url 'paymenterror' %}" />
     <input type="hidden" name="checksum" 
            value="{{checksum}}" />
 
