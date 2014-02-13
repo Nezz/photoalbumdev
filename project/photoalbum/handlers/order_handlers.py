@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.template import Context
-from photoalbum.utils import rest_helper
+from photoalbum.utils import rest_helper, validate_payment
 from photoalbum.renderers.order_renderers import *
 import datetime
 
@@ -119,7 +119,10 @@ def paymentsuccessHandler(request):
 
 def paymentsuccessGet(request):
     if 'pid' in request.GET and 'ref' in request.GET and 'checksum' in request.GET:
-        raise Http404 # TODO
+        if validate_payment(request.GET['pid'], request.GET['ref'], request.GET['checksum']):
+            return HttpResponseRedirect(reverse('orderitem', kwargs={'order_id' : request.GET['pid']}))
+        else:
+            raise Http404;
     else:
         return HttpResponseBadRequest()
 
