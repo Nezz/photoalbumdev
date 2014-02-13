@@ -173,7 +173,7 @@ class album_tests(TestCase):
         self.assertTemplateUsed(response, "album_list.html", "Testing that the right template was rendered")
 
         response = self.client.get('/albums/albumone', follow=True)
-        self.assertEquals(response.status_code, 404, "Testing request status code")
+        self.assertTemplateUsed(response, "404.html", "Testing that the item was not found")
 
     def test_albumDeletePostNonowner(self):
         self.client.login(username='admin2', password='admin2')
@@ -259,7 +259,7 @@ class album_tests(TestCase):
         response = self.client.get('/albums/albumtwo/1', follow=True)
         self.assertEquals(response.status_code, 200, "Testing request status code")
         response = self.client.get('/albums/albumtwo/3', follow=True)
-        self.assertEquals(response.status_code, 404, "Testing request status code")
+        self.assertTemplateUsed(response, "404.html", "Testing that the item was not found")
 
     def test_slideDeletePostNonowner(self):
         self.client.login(username='admin2', password='admin2')
@@ -337,7 +337,7 @@ class album_tests(TestCase):
         self.assertEquals(response.status_code, 302, "Testing request status code")
 
         response = self.client.get('/albums/albumtwo/2/1/')
-        self.assertEquals(response.status_code, 404, "Testing request status code")
+        self.assertTemplateUsed(response, "404.html", "Testing that the item was not found")
 
     """
          /albums/<Album ID>/<Slide ID>/<Photo ID>/delete
@@ -373,7 +373,7 @@ class album_tests(TestCase):
         self.assertTemplateUsed(response, "album.html", "Testing that the right template was rendered")
 
         response = self.client.get('/albums/albumone/1/1/', follow=True)
-        self.assertEquals(response.status_code, 404, "Testing request status code")
+        self.assertTemplateUsed(response, "404.html", "Testing that the item was not found")
         response = self.client.get('/albums/albumone/1/2/')
         self.assertEquals(response.status_code, 302, "Testing request status code")
 
