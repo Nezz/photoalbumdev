@@ -68,11 +68,10 @@ def orderlistGet(request):
 	* GET:
 		* Logged in: Order details
 		* No login: Login page
-	* POST:
-		* Cancel order (owner only)
+	* POST: N/A
 """
 def orderitemHandler(request, order_id):
-    return rest_helper(orderitemGet, orderitemPost, request, order_id)
+    return rest_helper(orderitemGet, None, request, order_id)
 
 def orderitemGet(request, order_id):
     order = get_object_or_404(Order, pk=order_id)
@@ -81,16 +80,6 @@ def orderitemGet(request, order_id):
             return orderitem_view(request, order, request.GET['status'])
         else:
             return orderitem_view(request, order, None)
-    elif not request.user.is_authenticated():
-        return HttpResponseRedirect(reverse('login'))
-    else:
-        return HttpResponseForbidden()
-
-def orderitemPost(request, order_id):
-    order = get_object_or_404(Order, pk=order_id)
-    if order.owner == request.user:
-        # TODO
-        raise Http404
     elif not request.user.is_authenticated():
         return HttpResponseRedirect(reverse('login'))
     else:
